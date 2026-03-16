@@ -152,21 +152,47 @@ button:hover{opacity:0.85;transform:scale(1.04);box-shadow:0 6px 12px rgba(56,18
   margin-top: 10px;
   color: #94a3b8;
 }
-.mini-game button {
-  margin: 5px;
-  background: #38bdf8;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  box-shadow: 0 4px 8px rgba(56,189,248,0.3);
-  cursor: pointer;
-  transition: 0.2s;
-}
 .mini-game button:hover {
   opacity: 0.85;
   transform: scale(1.04);
   box-shadow: 0 6px 12px rgba(56,189,248,0.4);
+}
+
+#wheelContainer {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 20px auto;
+}
+
+#wheel {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #00ff00 0deg 40deg,   /* +$50 */
+    #008000 40deg 80deg,  /* +$100 */
+    #006400 80deg 120deg, /* +$200 */
+    #004000 120deg 160deg,/* +$500 */
+    #ffd700 160deg 200deg,/* Jackpot $1000 */
+    #ff0000 200deg 240deg, /* -$50 */
+    #8b0000 240deg 280deg, /* -$100 */
+    #800000 280deg 320deg, /* -$200 */
+    #4b0000 320deg 360deg  /* -$500 */
+  );
+  position: relative;
+  transition: transform 3s ease-out;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+#pointer {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  color: #fff;
+  z-index: 10;
 }
 
 .sortable{cursor:pointer;}
@@ -276,6 +302,14 @@ button:hover{opacity:0.85;transform:scale(1.04);box-shadow:0 6px 12px rgba(56,18
   .toast {
     font-size: 0.85rem;
     padding: 8px 10px;
+  }
+  #wheelContainer {
+    width: 150px;
+    height: 150px;
+  }
+  #wheel {
+    width: 150px;
+    height: 150px;
   }
 }
 </style>
@@ -461,6 +495,22 @@ button:hover{opacity:0.85;transform:scale(1.04);box-shadow:0 6px 12px rgba(56,18
     <button class="save" id="buyLottery">🎟 Chipta sotib olish ($100 har biri)</button>
     <div id="lotteryResult" class="game-result"></div>
   </div>
+  <div class="mini-game-card">
+    <h3>🎡 Baraban</h3>
+    <div class="form-row">
+      <label>👤 Foydalanuvchi: <select id="barabanUser">
+        <option value="0">Komilov Ahrorbek</option>
+        <option value="1">Komilova Mubina</option>
+        <option value="2">Komilov Abrorbek</option>
+      </select></label>
+    </div>
+    <div id="wheelContainer">
+      <div id="wheel"></div>
+      <div id="pointer">▼</div>
+    </div>
+    <button class="save" id="spinBaraban">Spin ($100)</button>
+    <div id="barabanResult" class="game-result"></div>
+  </div>
 </div>
 
 <script>
@@ -480,6 +530,35 @@ let lotteryPot = 0;
 let totalTickets = 0;
 let lastWinner = null;
 let eventTimer = randomBetween(EVENT_INTERVAL_MIN, EVENT_INTERVAL_MAX);
+
+const sectors = [
+  {label: '+$50', value: 50},
+  {label: '+$100', value: 100},
+  {label: '+$200', value: 200},
+  {label: '+$500', value: 500},
+  {label: '🎰 $1000', value: 1000},
+  {label: '-$50', value: -50},
+  {label: '-$100', value: -100},
+  {label: '-$200', value: -200},
+  {label: '-$500', value: -500}
+];
+
+const weighted = [];
+sectors.forEach((s, i) => {
+  let count = 0;
+  switch(s.value){
+    case 50: count = 15; break;
+    case 100: count = 10; break;
+    case 200: count = 6; break;
+    case 500: count = 2; break;
+    case 1000: count = 1; break;
+    case -50: count = 25; break;
+    case -100: count = 20; break;
+    case -200: count = 15; break;
+    case -500: count = 6; break;
+  }
+  for(let j=0; j<count; j++) weighted.push(i);
+});
 
 function randomBetween(min,max){
   return Math.floor(Math.random()*(max-min+1)+min);
@@ -1027,6 +1106,7 @@ function populateSelects(){
     document.getElementById('slotUser').innerHTML = options;
     document.getElementById('diceUser').innerHTML = options;
     document.getElementById('lotteryUser').innerHTML = options;
+    document.getElementById('barabanUser').innerHTML = options;
     cachedOptionsHTML = options;
   }
 
@@ -1297,6 +1377,9 @@ document.addEventListener("click",e=>{
   }
   if(e.target.id === "buyLottery"){
     buyLottery();
+  }
+  if(e.target.id === "spinBaraban"){
+    spinBaraban();
   }
   if(e.target.classList.contains("resetBtn")){
     const i = Number(e.target.dataset.i);
@@ -1596,6 +1679,45 @@ function drawLottery(){
   lotteryTimer = 300; // reset to 5 min
   updateLotteryUI();
   buildTables();
+}
+
+function spinBaraban(){
+  const i = Number(document.getElementById('barabanUser').value);
+  const u = users[i];
+  if(!u || u.bank < 100) {
+    document.getElementById('barabanResult').textContent = 'Yetarli mablag\' yo\'q! ($100 kerak)';
+    return;
+  }
+  u.bank -= 100;
+  addHistoryPoint(i);
+  addTransaction(`${u.name} baraban aylantirdi: -$100`);
+  notify(`${u.name} baraban aylantirdi! -$100`);
+
+  // Get random result
+  const resultIndex = weighted[Math.floor(Math.random() * weighted.length)];
+  const result = sectors[resultIndex];
+
+  // Calculate angle (each sector 40deg, center at +20deg)
+  const angle = resultIndex * 40 + 20;
+  const totalRotation = 1800 + angle; // 5 full turns + angle
+
+  const wheel = document.getElementById('wheel');
+  wheel.style.transform = `rotate(${totalRotation}deg)`;
+
+  // After animation, update balance
+  setTimeout(() => {
+    u.bank += result.value;
+    addHistoryPoint(i);
+    if(result.value > 0){
+      addTransaction(`${u.name} baraban yutdi: +$${result.value}`);
+      notify(`${u.name} baraban yutdi! +$${result.value}`);
+    } else {
+      addTransaction(`${u.name} baraban yutqazdi: ${result.value}`);
+      notify(`${u.name} baraban yutqazdi! ${result.value}`);
+    }
+    document.getElementById('barabanResult').textContent = `Natija: ${result.label}`;
+    buildTables();
+  }, 3000);
 }
 
 // simulate passage of time without the interval running
