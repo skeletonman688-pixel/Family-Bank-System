@@ -176,7 +176,7 @@ button:hover{opacity:0.85;transform:scale(1.04);box-shadow:0 6px 12px rgba(56,18
 </style>
 <style>
 /* Mobile responsiveness */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   body {
     padding: 120px 20px 20px;
     font-size: 14px;
@@ -190,6 +190,7 @@ button:hover{opacity:0.85;transform:scale(1.04);box-shadow:0 6px 12px rgba(56,18
   .header h1 {
     font-size: 1.5rem;
     text-align: center;
+    display: block;
   }
   .header-nav {
     flex-direction: column;
@@ -555,7 +556,9 @@ function drawGraph(userIdx){
   if(creditEl) creditEl.textContent = `$${u.credit}`;
 
   const canvas = document.getElementById("statsCanvas");
-  const width = canvas.offsetWidth || 600;
+  const rect = canvas.getBoundingClientRect();
+  if(rect.width < 50) return; // Don't draw if not visible or too small
+  const width = rect.width;
   const height = Math.max(150, width * 0.5);
   canvas.width = width;
   canvas.height = height;
@@ -758,60 +761,81 @@ function playCasino(userIdx, amount){
   renderHistory();
 }
 
-function saveData(){
+async function saveData(){
   // save users and current timestamp for offline progression
-  localStorage.setItem("usersData",JSON.stringify(users));
-  localStorage.setItem("lastUpdate",Date.now());
-  localStorage.setItem("inflationRate", inflationRate);
-  // remember whether game was active
-  localStorage.setItem("gameActive", gameActive ? "1" : "0");
-  notify("Saqlangan ✅");
-}
-function loadData(){
-  let s=localStorage.getItem("usersData");
-  if(s){
-    users=JSON.parse(s);
-    users.forEach(u=>{ 
-      if(u.bank==598||u.bank==692) u.bank=0; 
-      if(typeof u.manuallyBlacklisted!="boolean") u.manuallyBlacklisted=false;
-      if(typeof u.bankInterestTimer!="number") u.bankInterestTimer=INTEREST_INTERVAL;
-      if(typeof u.creditInterestTimer!="number") u.creditInterestTimer=INTEREST_INTERVAL;
-      if(typeof u.taxPaidCount!="number") u.taxPaidCount=0;
-      if(typeof u.level!="number") u.level=1;
-      if(!u.achievements) u.achievements={first100:false, thousand:false, paidTax5:false};
-      if(!u.upgrades) u.upgrades={fastBank:false, creditShield:false, taxDiscount:false};
-      if(!Array.isArray(u.appliedLevels)) u.appliedLevels=[1];
-      if(!u.levelEffects) u.levelEffects={bankInterestPct:0, creditInterestPct:0, taxDiscountPct:0, randomBonus:0, bankTimerSpeed:1, specialBonus:0};
-      if(!u.businesses) u.businesses={lemonade:0, cafe:0, hotel:0};
-      if(typeof u.propertyCount !== 'number') u.propertyCount = u.businesses.lemonade + u.businesses.cafe + u.businesses.hotel;
-      if(typeof u.investCount!=='number') u.investCount=0;
-      if(typeof u.casinoWins!=='number') u.casinoWins=0;
-      if(typeof u.jailUntil!=='number') u.jailUntil=0;
-      if(!Array.isArray(u.missionsCompleted)) u.missionsCompleted=[];
-      if(!u.history) u.history = [];
-      if(u.history.length===0) u.history.push({time: Date.now(), bank: u.bank});
-      if(!u.creditHistory) u.creditHistory = [];
-      if(u.creditHistory.length===0) u.creditHistory.push({time: Date.now(), credit: u.credit});
-      if(typeof u.graphMinBank!=='number') u.graphMinBank = u.bank;
-      if(typeof u.graphMaxBank!=='number') u.graphMaxBank = u.bank;
-      if(typeof u.taxStatus !== 'string') u.taxStatus = '❌ To\'lanmadi';
-      if(typeof u.taxTimer !== 'number') u.taxTimer = 1800; // 30 minutes
-      if(typeof u.blacklisted !== 'boolean') u.blacklisted = false;
-      if(!Array.isArray(u.badges)) u.badges = [];
-      if(typeof u.totalInvested !== 'number') u.totalInvested = 0;
-      if(typeof u.lotteryWins !== 'number') u.lotteryWins = 0;
+  const data = {
+    users: users,
+    lastUpdate: Date.now(),
+    inflationRate: inflationRate,
+    gameActive: gameActive ? "1" : "0"
+  };
+  try {
+    const response = await fetch('/api/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
     });
-    // restore active flag
-    gameActive = localStorage.getItem("gameActive")==="1";
-    // advance timers to account for elapsed time (bank/credit always, tax only if gameActive)
-    const last=localStorage.getItem("lastUpdate");
-    if(last){
-      const now=Date.now();
-      let elapsedSec=Math.floor((now-Number(last))/1000);
-      if(elapsedSec>0){
-        advanceTime(elapsedSec);
-      }
+    if (response.ok) {
+      notify("Saqlangan ✅");
+    } else {
+      notify("Saqlashda xatolik");
     }
+  } catch (err) {
+    console.error('Save error:', err);
+    notify("Saqlashda xatolik");
+  }
+}
+async function loadData(){
+  try {
+    const response = await fetch('/api/data');
+    if (response.ok) {
+      const data = await response.json();
+      users = data.users || users;
+      inflationRate = data.inflationRate || 1.0;
+      gameActive = data.gameActive === "1";
+      const last = data.lastUpdate;
+      if(last){
+        const now=Date.now();
+        let elapsedSec=Math.floor((now-Number(last))/1000);
+        if(elapsedSec>0){
+          advanceTime(elapsedSec);
+        }
+      }
+      users.forEach(u=>{ 
+        if(u.bank==598||u.bank==692) u.bank=0; 
+        if(typeof u.manuallyBlacklisted!="boolean") u.manuallyBlacklisted=false;
+        if(typeof u.bankInterestTimer!="number") u.bankInterestTimer=INTEREST_INTERVAL;
+        if(typeof u.creditInterestTimer!="number") u.creditInterestTimer=INTEREST_INTERVAL;
+        if(typeof u.taxPaidCount!="number") u.taxPaidCount=0;
+        if(typeof u.level!="number") u.level=1;
+        if(!u.achievements) u.achievements={first100:false, thousand:false, paidTax5:false};
+        if(!u.upgrades) u.upgrades={fastBank:false, creditShield:false, taxDiscount:false};
+        if(!Array.isArray(u.appliedLevels)) u.appliedLevels=[1];
+        if(!u.levelEffects) u.levelEffects={bankInterestPct:0, creditInterestPct:0, taxDiscountPct:0, randomBonus:0, bankTimerSpeed:1, specialBonus:0};
+        if(!u.businesses) u.businesses={lemonade:0, cafe:0, hotel:0};
+        if(typeof u.propertyCount !== 'number') u.propertyCount = u.businesses.lemonade + u.businesses.cafe + u.businesses.hotel;
+        if(typeof u.investCount!=='number') u.investCount=0;
+        if(typeof u.casinoWins!=='number') u.casinoWins=0;
+        if(typeof u.jailUntil!=='number') u.jailUntil=0;
+        if(!Array.isArray(u.missionsCompleted)) u.missionsCompleted=[];
+        if(!u.history) u.history = [];
+        if(u.history.length===0) u.history.push({time: Date.now(), bank: u.bank});
+        if(!u.creditHistory) u.creditHistory = [];
+        if(u.creditHistory.length===0) u.creditHistory.push({time: Date.now(), credit: u.credit});
+        if(typeof u.graphMinBank!=='number') u.graphMinBank = u.bank;
+        if(typeof u.graphMaxBank!=='number') u.graphMaxBank = u.bank;
+        if(typeof u.taxStatus !== 'string') u.taxStatus = '❌ To\'lanmadi';
+        if(typeof u.taxTimer !== 'number') u.taxTimer = 1800; // 30 minutes
+        if(typeof u.blacklisted !== 'boolean') u.blacklisted = false;
+        if(!Array.isArray(u.badges)) u.badges = [];
+        if(typeof u.totalInvested !== 'number') u.totalInvested = 0;
+        if(typeof u.lotteryWins !== 'number') u.lotteryWins = 0;
+      });
+    } else {
+      console.error('Load failed');
+    }
+  } catch (err) {
+    console.error('Load error:', err);
   }
 }
 
@@ -1687,17 +1711,19 @@ document.getElementById("saveBtn").addEventListener("click",()=>{
 });
 
 // Initial
-loadData();
-buildTables();
-// reflect persisted active state
-gameStarted = gameActive;
-if(gameActive){
-  document.getElementById("stopBtn").disabled=false;
-}
-// start continuous interval for bank/credit (tax updates gated by gameStarted)
-timerInterval = setInterval(updateTimers,1000);
-startGraphRefresh();
-populateSelects();
+(async () => {
+  await loadData();
+  buildTables();
+  // reflect persisted active state
+  gameStarted = gameActive;
+  if(gameActive){
+    document.getElementById("stopBtn").disabled=false;
+  }
+  // start continuous interval for bank/credit (tax updates gated by gameStarted)
+  timerInterval = setInterval(updateTimers,1000);
+  startGraphRefresh();
+  populateSelects();
+})();
 
 // Header navigation buttons (scroll to section)
 const headerEl = document.querySelector('.header');
