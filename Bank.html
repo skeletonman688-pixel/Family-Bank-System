@@ -2,6 +2,7 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Google Search Console verification -->
 <!-- Replace CONTENT_VALUE with the value from Search Console -->
 <meta name="google-site-verification" content="58p-6n-Y-gXKq3o_sgxtYMNoOr_WasnzplvFYBxefqM" />
@@ -173,6 +174,110 @@ button:hover{opacity:0.85;transform:scale(1.04);box-shadow:0 6px 12px rgba(56,18
 
 .leaderboard-tooltip{position:absolute;padding:8px 12px;background:rgba(0,0,0,0.9);color:white;border-radius:8px;font-size:0.85rem;pointer-events:none;z-index:2000;display:none;}
 </style>
+<style>
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  body {
+    padding: 120px 20px 20px;
+    font-size: 14px;
+  }
+  .header {
+    padding: 10px 20px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .header h1 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .header-nav {
+    flex-direction: column;
+    gap: 5px;
+    align-items: stretch;
+  }
+  .header-nav .navBtn {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+  .header-right {
+    justify-content: center;
+  }
+  .container {
+    max-width: 100%;
+  }
+  .panel {
+    padding: 15px 10px;
+    margin: 10px 0;
+  }
+  .panel h2 {
+    font-size: 1.2rem;
+  }
+  .form-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .form-row label {
+    font-size: 0.9rem;
+    display: block;
+    text-align: left;
+  }
+  .form-row input[type=number],
+  .form-row select {
+    width: 100%;
+    padding: 8px;
+    font-size: 1rem;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  table {
+    font-size: 0.8rem;
+  }
+  th, td {
+    padding: 8px;
+  }
+  button {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+  .stats-panel-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .stats-graph {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .stats-summary {
+    flex: 0 0 auto;
+    text-align: center;
+  }
+  #statsCanvas {
+    width: 100%;
+    height: auto;
+    max-width: 600px;
+  }
+  .mini-game-card {
+    padding: 12px;
+  }
+  .mini-game button {
+    padding: 6px 10px;
+  }
+  .alert {
+    font-size: 0.9rem;
+  }
+  #toastContainer {
+    right: 10px;
+    max-width: 90vw;
+  }
+  .toast {
+    font-size: 0.85rem;
+    padding: 8px 10px;
+  }
+}
+</style>
 </head>
 <body>
 
@@ -277,7 +382,7 @@ button:hover{opacity:0.85;transform:scale(1.04);box-shadow:0 6px 12px rgba(56,18
   </div>
   <div class="stats-panel-content">
     <div class="stats-graph">
-      <canvas id="statsCanvas" width="600" height="300"></canvas>
+      <canvas id="statsCanvas" style="width:100%; max-width:600px; height:auto;"></canvas>
       <div class="stats-legend">
         <div class="legend-item">
           <div class="legend-color" style="background:#38bdf8;"></div>
@@ -449,7 +554,20 @@ function drawGraph(userIdx){
   if(bankEl) bankEl.textContent = `$${u.bank}`;
   if(creditEl) creditEl.textContent = `$${u.credit}`;
 
-  ctx.clearRect(0,0,600,300);
+  const canvas = document.getElementById("statsCanvas");
+  const width = canvas.offsetWidth || 600;
+  const height = Math.max(150, width * 0.5);
+  canvas.width = width;
+  canvas.height = height;
+
+  const marginLeft = 50;
+  const marginRight = 10;
+  const marginTop = 10;
+  const marginBottom = 10;
+  const plotWidth = width - marginLeft - marginRight;
+  const plotHeight = height - marginTop - marginBottom;
+
+  ctx.clearRect(0,0,width,height);
 
   // Ensure we always have points to draw (so graph appears even before history builds up)
   const now = Date.now();
@@ -511,22 +629,22 @@ function drawGraph(userIdx){
   const yTicks = 5;
   for(let i=0;i<=yTicks;i++){
     const ratio = i / yTicks;
-    const y = 290 - ratio * 280;
+    const y = height - marginBottom - ratio * plotHeight;
     const val = Math.round(minY + (valueRange * ratio));
-    ctx.fillText(`$${val}`, 45, y);
+    ctx.fillText(`$${val}`, marginLeft - 5, y);
     ctx.strokeStyle = 'rgba(148,163,184,0.25)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(50, y);
-    ctx.lineTo(590, y);
+    ctx.moveTo(marginLeft, y);
+    ctx.lineTo(width - marginRight, y);
     ctx.stroke();
   }
 
   // Generate render points for tooltip
   graphPoints = points.map(p=>{
-    const x = 50 + ((p.time - minTime) / timeRange) * 540;
-    const yBank = 290 - ((p.bank - minY) / valueRange) * 280;
-    const yCredit = 290 - ((p.credit - minY) / valueRange) * 280;
+    const x = marginLeft + ((p.time - minTime) / timeRange) * plotWidth;
+    const yBank = height - marginBottom - ((p.bank - minY) / valueRange) * plotHeight;
+    const yCredit = height - marginBottom - ((p.credit - minY) / valueRange) * plotHeight;
     return {x, time: new Date(p.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), bank: p.bank, credit: p.credit, yBank, yCredit};
   });
 
@@ -555,8 +673,8 @@ function drawGraph(userIdx){
   // Close and fill under the bank line
   if(firstPoint && prevPoint){
     ctx.lineTo(prevPoint.x, prevPoint.yBank);
-    ctx.lineTo(prevPoint.x, 290);
-    ctx.lineTo(firstPoint.x, 290);
+    ctx.lineTo(prevPoint.x, height - marginBottom);
+    ctx.lineTo(firstPoint.x, height - marginBottom);
     ctx.closePath();
     ctx.fillStyle = 'rgba(56,189,248,0.25)';
     ctx.fill();
@@ -588,9 +706,9 @@ function drawGraph(userIdx){
   ctx.strokeStyle = 'rgba(156,163,175,0.9)';
   ctx.lineWidth = 1.2;
   ctx.beginPath();
-  ctx.moveTo(50,10);
-  ctx.lineTo(50,290);
-  ctx.lineTo(590,290);
+  ctx.moveTo(marginLeft, marginTop);
+  ctx.lineTo(marginLeft, height - marginBottom);
+  ctx.lineTo(width - marginRight, height - marginBottom);
   ctx.stroke();
 }
 
@@ -849,6 +967,10 @@ statsTooltip.style.pointerEvents = 'none';
 statsTooltip.style.display = 'none';
 statsTooltip.style.zIndex = '2000';
 document.body.appendChild(statsTooltip);
+
+window.addEventListener('resize', () => {
+  drawGraph(Number(statsUserSelect.value));
+});
 
 statsCanvas.addEventListener('mousemove', e => {
   const rect = statsCanvas.getBoundingClientRect();
