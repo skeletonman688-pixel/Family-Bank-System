@@ -1,0 +1,162 @@
+{
+  "users": [
+    {
+      "name": "Komilov Ahrorbek",
+      "credit": 0,
+      "bank": 0,
+      "creditTimer": 600,
+      "bankTimer": 600,
+      "bankInterestTimer": 600,
+      "creditInterestTimer": 600,
+      "slots": 0,
+      "level": 1,
+      "appliedLevels": [
+        1
+      ],
+      "achievements": {
+        "first100": false,
+        "thousand": false,
+        "paidTax5": false
+      },
+      "upgrades": {
+        "fastBank": false,
+        "creditShield": false
+      },
+      "fastBankTimer": 0,
+      "levelEffects": {
+        "bankInterestPct": 0,
+        "creditInterestPct": 0,
+        "taxDiscountPct": 0,
+        "randomBonus": 0,
+        "bankTimerSpeed": 1,
+        "specialBonus": 0
+      },
+      "businesses": {
+        "lemonade": 0,
+        "cafe": 0,
+        "hotel": 0
+      },
+      "investCount": 0,
+      "casinoWins": 0,
+      "jailUntil": 0,
+      "missionsCompleted": [],
+      "history": [],
+      "creditHistory": [],
+      "propertyCount": 0,
+      "taxPaidCount": 0,
+      "taxStatus": "❌ To'lanmadi",
+      "taxTimer": 1800,
+      "blacklisted": false,
+      "badges": [],
+      "totalInvested": 0,
+      "lotteryWins": 0,
+      "lotteryTickets": 0
+    },
+    {
+      "name": "Komilova Mubina",
+      "credit": 0,
+      "bank": 0,
+      "creditTimer": 600,
+      "bankTimer": 600,
+      "bankInterestTimer": 600,
+      "creditInterestTimer": 600,
+      "slots": 0,
+      "level": 1,
+      "appliedLevels": [
+        1
+      ],
+      "achievements": {
+        "first100": false,
+        "thousand": false,
+        "paidTax5": false
+      },
+      "upgrades": {
+        "fastBank": false,
+        "creditShield": false
+      },
+      "fastBankTimer": 0,
+      "levelEffects": {
+        "bankInterestPct": 0,
+        "creditInterestPct": 0,
+        "taxDiscountPct": 0,
+        "randomBonus": 0,
+        "bankTimerSpeed": 1,
+        "specialBonus": 0
+      },
+      "businesses": {
+        "lemonade": 0,
+        "cafe": 0,
+        "hotel": 0
+      },
+      "investCount": 0,
+      "casinoWins": 0,
+      "jailUntil": 0,
+      "missionsCompleted": [],
+      "history": [],
+      "creditHistory": [],
+      "propertyCount": 0,
+      "taxPaidCount": 0,
+      "taxStatus": "❌ To'lanmadi",
+      "taxTimer": 1800,
+      "blacklisted": false,
+      "badges": [],
+      "totalInvested": 0,
+      "lotteryWins": 0,
+      "lotteryTickets": 0
+    },
+    {
+      "name": "Komilov Abrorbek",
+      "credit": 0,
+      "bank": 0,
+      "creditTimer": 600,
+      "bankTimer": 600,
+      "bankInterestTimer": 600,
+      "creditInterestTimer": 600,
+      "slots": 0,
+      "level": 1,
+      "appliedLevels": [
+        1
+      ],
+      "achievements": {
+        "first100": false,
+        "thousand": false,
+        "paidTax5": false
+      },
+      "upgrades": {
+        "fastBank": false,
+        "creditShield": false
+      },
+      "fastBankTimer": 0,
+      "levelEffects": {
+        "bankInterestPct": 0,
+        "creditInterestPct": 0,
+        "taxDiscountPct": 0,
+        "randomBonus": 0,
+        "bankTimerSpeed": 1,
+        "specialBonus": 0
+      },
+      "businesses": {
+        "lemonade": 0,
+        "cafe": 0,
+        "hotel": 0
+      },
+      "investCount": 0,
+      "casinoWins": 0,
+      "jailUntil": 0,
+      "missionsCompleted": [],
+      "history": [],
+      "creditHistory": [],
+      "propertyCount": 0,
+      "taxPaidCount": 0,
+      "taxStatus": "❌ To'lanmadi",
+      "taxTimer": 1800,
+      "blacklisted": false,
+      "badges": [],
+      "totalInvested": 0,
+      "lotteryWins": 0,
+      "lotteryTickets": 0
+    }
+  ],
+  "lastUpdate": 1773653837184,
+  "inflationRate": 1
+}
