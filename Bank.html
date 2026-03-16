@@ -195,6 +195,18 @@ button:hover{opacity:0.85;transform:scale(1.04);box-shadow:0 6px 12px rgba(56,18
   z-index: 10;
 }
 
+.sector-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 50% 50%;
+  font-size: 12px;
+  color: white;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px black;
+  pointer-events: none;
+}
+
 .sortable{cursor:pointer;}
 .sortable:hover{background:#334155;}
 
@@ -310,6 +322,9 @@ button:hover{opacity:0.85;transform:scale(1.04);box-shadow:0 6px 12px rgba(56,18
   #wheel {
     width: 150px;
     height: 150px;
+  }
+  .sector-label {
+    font-size: 10px;
   }
 }
 </style>
@@ -506,6 +521,15 @@ button:hover{opacity:0.85;transform:scale(1.04);box-shadow:0 6px 12px rgba(56,18
     </div>
     <div id="wheelContainer">
       <div id="wheel"></div>
+      <div class="sector-label" style="transform: rotate(20deg) translateY(-80px) rotate(-20deg);">+$50</div>
+      <div class="sector-label" style="transform: rotate(60deg) translateY(-80px) rotate(-60deg);">+$100</div>
+      <div class="sector-label" style="transform: rotate(100deg) translateY(-80px) rotate(-100deg);">+$200</div>
+      <div class="sector-label" style="transform: rotate(140deg) translateY(-80px) rotate(-140deg);">+$500</div>
+      <div class="sector-label" style="transform: rotate(180deg) translateY(-80px) rotate(-180deg);">🎰 $1000</div>
+      <div class="sector-label" style="transform: rotate(220deg) translateY(-80px) rotate(-220deg);">-$50</div>
+      <div class="sector-label" style="transform: rotate(260deg) translateY(-80px) rotate(-260deg);">-$100</div>
+      <div class="sector-label" style="transform: rotate(300deg) translateY(-80px) rotate(-300deg);">-$200</div>
+      <div class="sector-label" style="transform: rotate(340deg) translateY(-80px) rotate(-340deg);">-$500</div>
       <div id="pointer">▼</div>
     </div>
     <button class="save" id="spinBaraban">Spin ($100)</button>
