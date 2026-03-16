@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<!-- Google Search Console verification -->
+<!-- Replace CONTENT_VALUE with the value from Search Console -->
+<meta name="google-site-verification" content="CONTENT_VALUE">
+<title>Family Bank System</title>
+<style>
+body{background:#0f172a;color:white;font-family:Arial;text-align:center;padding:160px 40px 40px;}
+.header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(15,23,42,0.95);backdrop-filter:blur(12px);padding:14px 40px;border-bottom:1px solid rgba(56,189,248,0.2);display:flex;align-items:center;justify-content:space-between;gap:14px;}
+.header-nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;flex:1;}
+.header-right{display:flex;align-items:center;gap:10px;}
+
+.container{max-width:960px;margin:0 auto;}
+.panel{background:linear-gradient(135deg, rgba(15,23,42,0.95), rgba(15,23,42,0.75));border:1px solid rgba(56,189,248,0.2);border-left:5px solid #38bdf8;border-radius:16px;padding:22px 20px 16px;margin:20px auto;box-shadow:0 18px 30px rgba(0,0,0,0.35);backdrop-filter:blur(10px);scroll-margin-top:200px;}
+.navBtn{background:#38bdf8;color:white;border:none;border-radius:8px;padding:8px 12px;margin:0 4px 4px 0;cursor:pointer;transition:0.2s;box-shadow:0 4px 8px rgba(56,189,248,0.3);}
+.navBtn:hover{opacity:0.85;transform:scale(1.04);box-shadow:0 6px 12px rgba(56,189,248,0.4);}
+.navBtn:disabled{background:rgba(255,255,255,0.2);cursor:not-allowed;}
+
+
+.panel h2{margin-top:0;color:#38bdf8;}
+.header h1{color:white;}
+.panel.transfer{border-left:5px solid #06b6d4;}
+.panel.shop{border-left:5px solid #fbbf24;}
+.panel.ranking{border-left:5px solid #34d399;}
+.panel.investment{border-left:5px solid #a855f7;}
+.panel.casino{border-left:5px solid #fb7185;}
+.panel.tax{border-left:5px solid #f59e0b;}
+.panel.history{border-left:5px solid #60a5fa;}
+.panel.stats{border-left:5px solid #ec4899;}
+.stats-panel-content{display:flex;gap:26px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;}
+.stats-graph{flex:1 1 560px;min-width:280px;}
+.stats-summary{flex:0 0 260px;display:flex;flex-direction:column;gap:12px;text-align:right;}
+.stats-summary .stat-card{background:rgba(255,255,255,0.08);border:1px solid rgba(56,189,248,0.2);border-radius:12px;padding:14px 16px;}
+.stats-summary .stat-card h3{margin:0;font-size:0.9rem;color:#94a3b8;}
+.stats-summary .stat-value{margin-top:6px;font-size:1.6rem;font-weight:700;}
+.stats-legend{display:flex;gap:20px;margin-top:10px;justify-content:center;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:0.9rem;}
+.legend-color{width:12px;height:12px;border-radius:2px;}
+#statsCanvas{border:1px solid rgba(56,189,248,0.3);background:linear-gradient(135deg, rgba(15,23,42,0.8), rgba(30,41,59,0.6));border-radius:8px;}
+.form-row{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin:8px 0;justify-content:center;}
+.form-row label{font-size:0.95rem;gap:0.25rem;display:flex;align-items:center;}
+.form-row input[type=number]{width:120px;padding:6px;border-radius:6px;border:1px solid rgba(148,163,184,0.5);background:rgba(15,23,42,0.75);color:white;}
+.form-row select{
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid rgba(56,189,248,0.35);
+  background:rgba(15,23,42,0.95);
+  color:white;
+  width:170px;
+  cursor:pointer;
+  box-shadow:0 10px 30px rgba(0,0,0,0.45);
+  font-size:0.9rem;
+}
+.form-row select option{background:rgba(15,23,42,0.95);color:white;}
+.table-wrap{overflow-x:auto;margin-top:12px;}
+table{margin:auto;border-collapse:collapse;width:100%;}
+th,td{border:1px solid #334155;padding:12px;}
+th{background:#1e293b;}
+.money{color:lime;}
+.timerBank{color:#38bdf8;}
+.timerCredit{color:#38bdf8;}
+button{padding:8px 14px;margin:4px;cursor:pointer;transition:0.2s;}
+button:hover{opacity:0.85;transform:scale(1.04);box-shadow:0 6px 12px rgba(56,189,248,0.4);}
+.save{background:#22c55e;color:white;border:none;border-radius:8px;padding:10px 16px;box-shadow:0 4px 8px rgba(34,197,94,0.3);}
+.resetBtn{background:#f87171;color:white;border:none;border-radius:8px;padding:6px 12px;box-shadow:0 4px 8px rgba(248,113,113,0.3);}
+.payTax{background:#3b82f6;color:white;border:none;border-radius:8px;padding:8px 14px;box-shadow:0 4px 8px rgba(59,130,246,0.3);}
+.addCredit{background:#3b82f6;color:white;border:none;border-radius:8px;padding:4px 8px;box-shadow:0 2px 4px rgba(59,130,246,0.3);}
+.addBank{background:#3b82f6;color:white;border:none;border-radius:8px;padding:5px 10px;box-shadow:0 2px 4px rgba(59,130,246,0.3);}
+#startBtn,#stopBtn,#saveBtn{background:#38bdf8;color:white;border:none;border-radius:10px;padding:12px 20px;font-size:1.1rem;box-shadow:0 4px 8px rgba(56,189,248,0.3);}
+#transferBtn{background:#38bdf8;color:white;border:none;border-radius:8px;padding:9px 15px;box-shadow:0 4px 8px rgba(56,189,248,0.3);}
+#buyFastBank{background:#38bdf8;color:white;border:none;border-radius:8px;padding:7px 13px;box-shadow:0 4px 8px rgba(56,189,248,0.3);}
+#buyCreditShield{background:#38bdf8;color:white;border:none;border-radius:8px;padding:7px 13px;box-shadow:0 4px 8px rgba(56,189,248,0.3);}
+.blacklisted{background-color:#7f1d1d !important;}
+.alert{background:rgba(255,255,255,0.08);border:1px solid rgba(148,163,184,0.25);border-radius:10px;padding:10px;margin-top:10px;text-align:left;font-size:0.95rem;}
+#toastContainer{position:fixed;top:96px;right:16px;z-index:1500;display:flex;flex-direction:column;gap:10px;max-width:320px;pointer-events:none;}
+.toast{pointer-events:auto;background:rgba(15,23,42,0.95);border:1px solid rgba(56,189,248,0.35);border-radius:14px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,0.45);color:white;font-size:0.9rem;animation:toastIn 0.25s ease-out;}
+.toast strong{display:block;margin-bottom:4px;}
+@keyframes toastIn{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:translateY(0);} }
+
+.value-change-positive {
+  animation: valuePositive 2s ease-out;
+  color: lime !important;
+}
+.value-change-negative {
+  animation: valueNegative 2s ease-out;
+  color: red !important;
+}
+@keyframes valuePositive {
+  0% { transform: scale(1.1); color: lime; }
+  50% { transform: scale(1.2); color: lime; }
+  100% { transform: scale(1); color: lime; }
+}
+@keyframes valueNegative {
+  0% { transform: scale(0.9); color: red; }
+  50% { transform: scale(0.8); color: red; }
+  100% { transform: scale(1); color: red; }
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: rgba(0,0,0,0.8);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.badge {
+  display: inline-block;
+  margin: 2px;
+  padding: 2px 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  font-size: 0.8em;
+}
+
+.mini-game {
+  margin: 10px 0;
+}
+.mini-game-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 10px 0;
+}
+.game-result {
+  margin-top: 10px;
+  font-weight: bold;
+  color: c
+}
+.timer-display {
+  margin-top: 10px;
+  color: #94a3b8;
+}
+.mini-game button {
+  margin: 5px;
+  background: #38bdf8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  box-shadow: 0 4px 8px rgba(56,189,248,0.3);
+  cursor: pointer;
+  transition: 0.2s;
+}
+.mini-game button:hover {
+  opacity: 0.85;
+  transform: scale(1.04);
+  box-shadow: 0 6px 12px rgba(56,189,248,0.4);
+}
+
+.sortable{cursor:pointer;}
+.sortable:hover{background:#334155;}
+
+.leaderboard-tooltip{position:absolute;padding:8px 12px;background:rgba(0,0,0,0.9);color:white;border-radius:8px;font-size:0.85rem;pointer-events:none;z-index:2000;display:none;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>💰 Family<br>Bank System</h1>
+  <div class="header-nav">
+    <button class="navBtn" data-target="bankPanel">Bank & Kredit</button>
+    <button class="navBtn" data-target="taxPanel">Soliq</button>
+    <button class="navBtn" data-target="leaderboardPanel">Leaderboard</button>
+    <button class="navBtn" data-target="transferPanel">Pul yuborish</button>
+    <button class="navBtn" data-target="shopPanel">Do'kon</button>
+    <button class="navBtn" data-target="historyPanel">Transaction</button>
+    <button class="navBtn" data-target="statsPanel">Statistika</button>
+    <button class="navBtn" data-target="miniGamesPanel">Mini Games</button>
+  </div>
+  <div class="header-right">
+    <button class="save" id="startBtn">▶️ Start</button>
+    <button class="save" id="stopBtn" disabled>⏹️ Stop</button>
+    <button class="save" id="saveBtn">💾 Saqlash</button>
+  </div>
+</div>
+<div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+<div class="panel" id="bankPanel">
+  <h2>Bank va Kredit</h2>
+  <div class="table-wrap">
+    <table id="userTable">
+      <tr>
+        <th>👤 Ism Familiya</th>
+        <th>💳 Kredit</th>
+        <th>🏦 Bank</th>
+        <th>⏱️ Timer</th>
+        <th>⚙️ Actions</th>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="panel tax" id="taxPanel">
+  <h2>Soliq Tizimi</h2>
+  <div class="table-wrap">
+    <table id="taxTable">
+      <tr>
+        <th>👤 Ism</th>
+        <th>💸 Soliq</th>
+        <th>⏱ Timer</th>
+        <th>📊 Status</th>
+        <th>🚫 Qora ro'yxat</th>
+        <th>💰 To'lash</th>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="panel ranking" id="leaderboardPanel">
+  <h2>🏆 Leaderboard</h2>
+  <div class="table-wrap">
+    <table id="leaderboardTable">
+      <tr>
+        <th>🏅 O'rin</th>
+        <th>👤 Ism Familiya</th>
+        <th>💰 Boylik</th>
+        <th>🎰 Kazino yutuqlari</th>
+        <th>📊 Kategoriya</th>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="panel transfer" id="transferPanel">
+  <h2>💸 Pul yuborish</h2>
+  <div class="form-row">
+    <label>Jo‘natuvchi: <select id="senderSelect"></select></label>
+    <label>Qabul qiluvchi: <select id="receiverSelect"></select></label>
+    <label>Summa: <input type="number" id="transferAmount" value="0" min="0"></label>
+    <button id="transferBtn" class="save">Yuborish</button>
+  </div>
+  <div id="senderInfo" class="alert"></div>
+</div>
+
+<div class="panel shop" id="shopPanel">
+  <h2>🛒 Do‘kon</h2>
+  <div class="form-row">
+    <label>👤 Foydalanuvchi: <select id="shopUserSelect"></select></label>
+  </div>
+  <div class="form-row">
+    <button class="save" id="buyFastBank">⚡ Fast Bank ($15)</button>
+    <button class="save" id="buyCreditShield">🛡️ Kredit himoyasi ($20)</button>
+  </div>
+  <div id="ownedUpgrades" class="alert"></div>
+</div>
+
+<div class="panel history" id="historyPanel">
+  <h2>📜 Transaction tarix</h2>
+  <div id="historyList" class="alert" style="max-height:260px;overflow:auto;"></div>
+</div>
+
+<div class="panel stats" id="statsPanel">
+  <h2>📊 Statistika</h2>
+  <div class="form-row">
+    <label>👤 Foydalanuvchi: <select id="statsUserSelect"></select></label>
+  </div>
+  <div class="stats-panel-content">
+    <div class="stats-graph">
+      <canvas id="statsCanvas" width="600" height="300"></canvas>
+      <div class="stats-legend">
+        <div class="legend-item">
+          <div class="legend-color" style="background:#38bdf8;"></div>
+          <span>🏦 Bank</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background:#fbbf24;"></div>
+          <span>💳 Kredit</span>
+        </div>
+      </div>
+    </div>
+    <div class="stats-summary">
+      <div class="stat-card">
+        <h3>Umumiy boylik</h3>
+        <div class="stat-value" id="statTotal">$0</div>
+      </div>
+      <div class="stat-card">
+        <h3>Bank</h3>
+        <div class="stat-value" id="statBank">$0</div>
+      </div>
+      <div class="stat-card">
+        <h3>Kredit</h3>
+        <div class="stat-value" id="statCredit">$0</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel mini-games" id="miniGamesPanel">
+  <h2>🎮 Mini Games</h2>
+  <div class="mini-game-card">
+    <h3>🎰 Slot Machine</h3>
+    <div class="form-row">
+      <label>👤 Foydalanuvchi: <select id="slotUser">
+        <option value="0">Komilov Ahrorbek</option>
+        <option value="1">Komilova Mubina</option>
+        <option value="2">Komilov Abrorbek</option>
+      </select></label>
+      <label>Bet: <input type="number" id="slotBet" value="10" min="1" placeholder="Bet amount"></label>
+    </div>
+    <button class="save" id="playSlot">O'ynash</button>
+    <div id="slotResult" class="game-result"></div>
+  </div>
+  <div class="mini-game-card">
+    <h3>🎲 Dice Roll</h3>
+    <div class="form-row">
+      <label>👤 Foydalanuvchi: <select id="diceUser">
+        <option value="0">Komilov Ahrorbek</option>
+        <option value="1">Komilova Mubina</option>
+        <option value="2">Komilov Abrorbek</option>
+      </select></label>
+      <label>Bet: <input type="number" id="diceBet" value="10" min="1" placeholder="Bet amount"></label>
+      <label>Raqam (1-6): <input type="number" id="diceGuess" min="1" max="6" placeholder="Guess 1-6"></label>
+    </div>
+    <button class="save" id="playDice">O'ynash</button>
+    <div id="diceResult" class="game-result"></div>
+  </div>
+  <div class="mini-game-card">
+    <h3>🎟️ Lottery</h3>
+    <div style="text-align:center; margin-bottom:10px;">
+      <div style="font-size:1.5em; font-weight:bold; color:#38bdf8;">Pot: $<span id="lotteryPot">0</span></div>
+      <div>Tickets Sold: <span id="ticketsSold">0</span></div>
+      <div>Your Tickets: <span id="yourTickets">0</span></div>
+      <div id="lotteryTimer" class="timer-display">Keyingi lotereya: 5:00</div>
+      <div>Last Winner: <span id="lastWinner">None</span></div>
+    </div>
+    <div class="form-row">
+      <label>👤 Foydalanuvchi: <select id="lotteryUser">
+        <option value="0">Komilov Ahrorbek</option>
+        <option value="1">Komilova Mubina</option>
+        <option value="2">Komilov Abrorbek</option>
+      </select></label>
+      <label>Chiptalar soni: <input type="number" id="lotteryTickets" value="1" min="1"></label>
+    </div>
+    <button class="save" id="buyLottery">🎟 Chipta sotib olish ($100 har biri)</button>
+    <div id="lotteryResult" class="game-result"></div>
+  </div>
+</div>
+
+<script>
+const INTEREST_INTERVAL=600; // 10 minutes
+const EVENT_INTERVAL_MIN=300; // 5 minutes
+const EVENT_INTERVAL_MAX=600; // 10 minutes
+
+let gameStarted=false;           // indicates timer running
+let gameActive=false;            // persisted state of whether game was started and not stopped
+let timerInterval=null;
+let graphInterval=null;
+let inflationRate = 1.0;
+let inflationDecreaseTimer = 600; // 10 minutes
+let inflationIncreaseTimer = 480; // 8 minutes
+let lotteryTimer = 300; // 5 minutes in seconds
+let lotteryPot = 0;
+let totalTickets = 0;
+let lastWinner = null;
+let eventTimer = randomBetween(EVENT_INTERVAL_MIN, EVENT_INTERVAL_MAX);
+
+function randomBetween(min,max){
+  return Math.floor(Math.random()*(max-min+1)+min);
+}
+
+let users=[
+  {name:"Komilov Ahrorbek", credit:0, bank:0, creditTimer:600, bankTimer:600, bankInterestTimer:INTEREST_INTERVAL, creditInterestTimer:INTEREST_INTERVAL, slots:0, level:1, appliedLevels:[1], achievements:{first100:false, thousand:false, paidTax5:false}, upgrades:{fastBank:false, creditShield:false}, fastBankTimer:0, levelEffects:{bankInterestPct:0, creditInterestPct:0, taxDiscountPct:0, randomBonus:0, bankTimerSpeed:1, specialBonus:0}, businesses:{lemonade:0,cafe:0,hotel:0}, investCount:0, casinoWins:0, jailUntil:0, missionsCompleted:[], history:[], creditHistory:[], propertyCount:0, taxPaidCount:0, taxStatus:'❌ To\'lanmadi', taxTimer:1800, blacklisted:false, badges:[], totalInvested:0, lotteryWins:0, lotteryTickets:0},
+  {name:"Komilova Mubina", credit:0, bank:0, creditTimer:600, bankTimer:600, bankInterestTimer:INTEREST_INTERVAL, creditInterestTimer:INTEREST_INTERVAL, slots:0, level:1, appliedLevels:[1], achievements:{first100:false, thousand:false, paidTax5:false}, upgrades:{fastBank:false, creditShield:false}, fastBankTimer:0, levelEffects:{bankInterestPct:0, creditInterestPct:0, taxDiscountPct:0, randomBonus:0, bankTimerSpeed:1, specialBonus:0}, businesses:{lemonade:0,cafe:0,hotel:0}, investCount:0, casinoWins:0, jailUntil:0, missionsCompleted:[], history:[], creditHistory:[], propertyCount:0, taxPaidCount:0, taxStatus:'❌ To\'lanmadi', taxTimer:1800, blacklisted:false, badges:[], totalInvested:0, lotteryWins:0, lotteryTickets:0},
+  {name:"Komilov Abrorbek", credit:0, bank:0, creditTimer:600, bankTimer:600, bankInterestTimer:INTEREST_INTERVAL, creditInterestTimer:INTEREST_INTERVAL, slots:0, level:1, appliedLevels:[1], achievements:{first100:false, thousand:false, paidTax5:false}, upgrades:{fastBank:false, creditShield:false}, fastBankTimer:0, levelEffects:{bankInterestPct:0, creditInterestPct:0, taxDiscountPct:0, randomBonus:0, bankTimerSpeed:1, specialBonus:0}, businesses:{lemonade:0,cafe:0,hotel:0}, investCount:0, casinoWins:0, jailUntil:0, missionsCompleted:[], history:[], creditHistory:[], propertyCount:0, taxPaidCount:0, taxStatus:'❌ To\'lanmadi', taxTimer:1800, blacklisted:false, badges:[], totalInvested:0, lotteryWins:0, lotteryTickets:0}
+];
+
+const toastCache = new Map();
+
+
+function notify(message, options={}){
+  const now = Date.now();
+  const cooldown = options.cooldown ?? 3000;
+  const key = message;
+  if(toastCache.has(key) && now - toastCache.get(key) < cooldown) return;
+  toastCache.set(key, now);
+
+  const container = document.getElementById("toastContainer");
+  if(!container) return;
+
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  setTimeout(()=>{
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(-8px)";
+    setTimeout(()=>{ toast.remove(); }, 250);
+  }, options.duration ?? 4000);
+}
+
+function addTransaction(text){
+  transactions.unshift(`${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}: ${text}`);
+  if(transactions.length>60) transactions.pop();
+  renderHistory();
+}
+
+function renderHistory(){
+  if(!historyList) return;
+  historyList.innerHTML = transactions.map(t=>`<div>${t}</div>`).join('');
+}
+
+function addHistoryPoint(userIdx){
+  const u = users[userIdx];
+  // keep stable graph scale so sudden jumps don't make the line bounce
+  if(typeof u.graphMinBank !== 'number') u.graphMinBank = u.bank;
+  if(typeof u.graphMaxBank !== 'number') u.graphMaxBank = u.bank;
+  u.graphMinBank = Math.min(u.graphMinBank, u.bank);
+  u.graphMaxBank = Math.max(u.graphMaxBank, u.bank);
+
+  const now = Date.now();
+  u.history.push({time: now, bank: u.bank});
+  if(u.history.length > 100000) u.history.shift();
+  u.creditHistory.push({time: now, credit: u.credit});
+  if(u.creditHistory.length > 100000) u.creditHistory.shift();
+}
+
+function drawGraph(userIdx){
+  const u = users[userIdx];
+  const bankHist = u.history || [];
+  const creditHist = u.creditHistory || [];
+
+  // Update summary cards (YouTube-style top stats)
+  const totalEl = document.getElementById("statTotal");
+  const bankEl = document.getElementById("statBank");
+  const creditEl = document.getElementById("statCredit");
+  if(totalEl) totalEl.textContent = `$${u.bank + u.credit}`;
+  if(bankEl) bankEl.textContent = `$${u.bank}`;
+  if(creditEl) creditEl.textContent = `$${u.credit}`;
+
+  ctx.clearRect(0,0,600,300);
+
+  // Ensure we always have points to draw (so graph appears even before history builds up)
+  const now = Date.now();
+  const bankPoints = bankHist.length >= 2 ? bankHist : [{time: now - 1000, bank: u.bank}, {time: now, bank: u.bank}];
+  const creditPoints = creditHist.length >= 2 ? creditHist : [{time: now - 1000, credit: u.credit}, {time: now, credit: u.credit}];
+
+  const allTimes = [...bankPoints, ...creditPoints].map(h=>h.time);
+  const maxTime = Math.max(...allTimes);
+  const minTime = Math.min(...allTimes);
+  const timeRange = maxTime - minTime;
+  if(timeRange === 0) return;
+
+  // Build combined points for both bank and credit.
+  // If one side updates without the other, carry the last known value forward
+  // so the graph doesn't drop to 0 spuriously.
+  const pointMap = new Map();
+  bankHist.forEach(h=>{
+    const key = h.time;
+    if(!pointMap.has(key)) pointMap.set(key, {time:h.time, bank:h.bank, credit:0, bankSet:true, creditSet:false});
+    else Object.assign(pointMap.get(key), {bank:h.bank, bankSet:true});
+  });
+  creditHist.forEach(h=>{
+    const key = h.time;
+    if(!pointMap.has(key)) pointMap.set(key, {time:h.time, bank:0, credit:h.credit, bankSet:false, creditSet:true});
+    else Object.assign(pointMap.get(key), {credit:h.credit, creditSet:true});
+  });
+
+  const points = [...pointMap.values()].sort((a,b)=>a.time-b.time);
+  if(points.length < 2) return;
+
+  // Add a current point at “now” so the line always extends to the right edge
+  // (prevents it from appearing to stop early when no new history points are added)
+  points.push({time: now, bank: u.bank, credit: u.credit, bankSet: true, creditSet: true});
+
+  // Fill missing values by carrying forward the last known value
+  let lastBank = points[0].bank;
+  let lastCredit = points[0].credit;
+  points.forEach(p=>{
+    if(!p.bankSet) p.bank = lastBank;
+    else lastBank = p.bank;
+    if(!p.creditSet) p.credit = lastCredit;
+    else lastCredit = p.credit;
+  });
+
+  // Determine Y-axis range
+  const values = points.flatMap(p=>[p.bank, p.credit]);
+  const minVal = Math.min(...values, 0);
+  const maxVal = Math.max(...values, 10);
+  const padding = Math.max(10, Math.round((maxVal - minVal) * 0.1));
+  const minY = Math.max(0, minVal - padding);
+  const maxY = maxVal + padding;
+  const valueRange = Math.max(1, maxY - minY);
+
+  // Draw grid + labels
+  ctx.font = '12px Arial';
+  ctx.fillStyle = '#9ca3af';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  const yTicks = 5;
+  for(let i=0;i<=yTicks;i++){
+    const ratio = i / yTicks;
+    const y = 290 - ratio * 280;
+    const val = Math.round(minY + (valueRange * ratio));
+    ctx.fillText(`$${val}`, 45, y);
+    ctx.strokeStyle = 'rgba(148,163,184,0.25)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(50, y);
+    ctx.lineTo(590, y);
+    ctx.stroke();
+  }
+
+  // Generate render points for tooltip
+  graphPoints = points.map(p=>{
+    const x = 50 + ((p.time - minTime) / timeRange) * 540;
+    const yBank = 290 - ((p.bank - minY) / valueRange) * 280;
+    const yCredit = 290 - ((p.credit - minY) / valueRange) * 280;
+    return {x, time: new Date(p.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), bank: p.bank, credit: p.credit, yBank, yCredit};
+  });
+
+  // Make the graph look smooth (rounded and anti-aliased)
+  ctx.imageSmoothingEnabled = true;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+
+  // Draw bank line with smooth curves
+  ctx.beginPath();
+  let firstPoint = graphPoints[0];
+  let prevPoint = null;
+  graphPoints.forEach((pt, idx)=>{
+    const x = pt.x;
+    const y = pt.yBank;
+    if(idx === 0){
+      ctx.moveTo(x, y);
+    } else if(prevPoint){
+      const midX = (prevPoint.x + x) / 2;
+      const midY = (prevPoint.yBank + y) / 2;
+      ctx.quadraticCurveTo(prevPoint.x, prevPoint.yBank, midX, midY);
+    }
+    prevPoint = pt;
+  });
+
+  // Close and fill under the bank line
+  if(firstPoint && prevPoint){
+    ctx.lineTo(prevPoint.x, prevPoint.yBank);
+    ctx.lineTo(prevPoint.x, 290);
+    ctx.lineTo(firstPoint.x, 290);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(56,189,248,0.25)';
+    ctx.fill();
+  }
+
+  // Stroke bank line on top
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Draw credit line (smoothed)
+  ctx.beginPath();
+  prevPoint = null;
+  graphPoints.forEach((pt, idx)=>{
+    if(idx === 0){
+      ctx.moveTo(pt.x, pt.yCredit);
+    } else if(prevPoint){
+      const midX = (prevPoint.x + pt.x) / 2;
+      const midY = (prevPoint.yCredit + pt.yCredit) / 2;
+      ctx.quadraticCurveTo(prevPoint.x, prevPoint.yCredit, midX, midY);
+    }
+    prevPoint = pt;
+  });
+  ctx.strokeStyle = '#fbbf24';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Draw axes
+  ctx.strokeStyle = 'rgba(156,163,175,0.9)';
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(50,10);
+  ctx.lineTo(50,290);
+  ctx.lineTo(590,290);
+  ctx.stroke();
+}
+
+function renderInvestments(){
+  // removed
+}
+
+function startInvestment(userIdx, amount){
+  const plan = Number(investPlanSelect.value);
+  const configs = {
+    50: {duration:600, ret:75},
+    100: {duration:900, ret:150},
+    200: {duration:1200, ret:320}
+  };
+  const config = configs[plan];
+  if(!config) return;
+  const user = users[userIdx];
+  if(!user || user.bank < amount) return;
+  user.bank -= amount;
+  user.investCount = (user.investCount||0)+1;
+  user.totalInvested += amount;
+  addHistoryPoint(userIdx);
+  investments.push({userIdx, userName:user.name, amount, returnAmount:config.ret, remaining:config.duration});
+  addTransaction(`${user.name} investitsiya qildi: $${amount} -> $${config.ret}`);
+  notify(`${user.name} investitsiya boshladi ($${amount})`);
+  renderInvestments();
+}
+
+function playCasino(userIdx, amount){
+  const user = users[userIdx];
+  if(!user || user.bank < amount) return;
+  user.bank -= amount;
+  addHistoryPoint(userIdx);
+  const win = Math.random() < 0.5;
+  if(win){
+    const payout = amount*2;
+    user.bank += payout;
+    user.casinoWins = (user.casinoWins||0)+1;
+    addHistoryPoint(userIdx);
+    addTransaction(`${user.name} kazino yutdi: +$${payout - amount}`);
+    notify(`${user.name} yutdi! +$${payout - amount}`);
+  } else {
+    addTransaction(`${user.name} kazino yutqazdi: -$${amount}`);
+    notify(`${user.name} yutqazdi! -$${amount}`);
+  }
+  renderInvestments();
+  renderHistory();
+}
+
+function saveData(){
+  // save users and current timestamp for offline progression
+  localStorage.setItem("usersData",JSON.stringify(users));
+  localStorage.setItem("lastUpdate",Date.now());
+  localStorage.setItem("inflationRate", inflationRate);
+  // remember whether game was active
+  localStorage.setItem("gameActive", gameActive ? "1" : "0");
+  notify("Saqlangan ✅");
+}
+function loadData(){
+  let s=localStorage.getItem("usersData");
+  if(s){
+    users=JSON.parse(s);
+    users.forEach(u=>{ 
+      if(u.bank==598||u.bank==692) u.bank=0; 
+      if(typeof u.manuallyBlacklisted!="boolean") u.manuallyBlacklisted=false;
+      if(typeof u.bankInterestTimer!="number") u.bankInterestTimer=INTEREST_INTERVAL;
+      if(typeof u.creditInterestTimer!="number") u.creditInterestTimer=INTEREST_INTERVAL;
+      if(typeof u.taxPaidCount!="number") u.taxPaidCount=0;
+      if(typeof u.level!="number") u.level=1;
+      if(!u.achievements) u.achievements={first100:false, thousand:false, paidTax5:false};
+      if(!u.upgrades) u.upgrades={fastBank:false, creditShield:false, taxDiscount:false};
+      if(!Array.isArray(u.appliedLevels)) u.appliedLevels=[1];
+      if(!u.levelEffects) u.levelEffects={bankInterestPct:0, creditInterestPct:0, taxDiscountPct:0, randomBonus:0, bankTimerSpeed:1, specialBonus:0};
+      if(!u.businesses) u.businesses={lemonade:0, cafe:0, hotel:0};
+      if(typeof u.propertyCount !== 'number') u.propertyCount = u.businesses.lemonade + u.businesses.cafe + u.businesses.hotel;
+      if(typeof u.investCount!=='number') u.investCount=0;
+      if(typeof u.casinoWins!=='number') u.casinoWins=0;
+      if(typeof u.jailUntil!=='number') u.jailUntil=0;
+      if(!Array.isArray(u.missionsCompleted)) u.missionsCompleted=[];
+      if(!u.history) u.history = [];
+      if(u.history.length===0) u.history.push({time: Date.now(), bank: u.bank});
+      if(!u.creditHistory) u.creditHistory = [];
+      if(u.creditHistory.length===0) u.creditHistory.push({time: Date.now(), credit: u.credit});
+      if(typeof u.graphMinBank!=='number') u.graphMinBank = u.bank;
+      if(typeof u.graphMaxBank!=='number') u.graphMaxBank = u.bank;
+      if(typeof u.taxStatus !== 'string') u.taxStatus = '❌ To\'lanmadi';
+      if(typeof u.taxTimer !== 'number') u.taxTimer = 1800; // 30 minutes
+      if(typeof u.blacklisted !== 'boolean') u.blacklisted = false;
+      if(!Array.isArray(u.badges)) u.badges = [];
+      if(typeof u.totalInvested !== 'number') u.totalInvested = 0;
+      if(typeof u.lotteryWins !== 'number') u.lotteryWins = 0;
+    });
+    // restore active flag
+    gameActive = localStorage.getItem("gameActive")==="1";
+    // advance timers to account for elapsed time (bank/credit always, tax only if gameActive)
+    const last=localStorage.getItem("lastUpdate");
+    if(last){
+      const now=Date.now();
+      let elapsedSec=Math.floor((now-Number(last))/1000);
+      if(elapsedSec>0){
+        advanceTime(elapsedSec);
+      }
+    }
+  }
+}
+
+function updateUserRow(i){
+  const u = users[i];
+  if(!u) return;
+
+  // Bank & Kredit
+  const bankEl = document.getElementById("bank"+i);
+  const creditEl = document.getElementById("credit"+i);
+  if(bankEl){
+    const prevBank = parseInt(bankEl.textContent.replace('$','')) || 0;
+    bankEl.textContent="$"+u.bank;
+    if(u.bank > prevBank) bankEl.classList.add('value-change-positive');
+    else if(u.bank < prevBank) bankEl.classList.add('value-change-negative');
+    setTimeout(()=>bankEl.classList.remove('value-change-positive','value-change-negative'), 2000);
+  }
+  if(creditEl){
+    const prevCredit = parseInt(creditEl.textContent.replace('$','')) || 0;
+    creditEl.textContent="$"+u.credit;
+    if(u.credit > prevCredit) creditEl.classList.add('value-change-positive');
+    else if(u.credit < prevCredit) creditEl.classList.add('value-change-negative');
+    setTimeout(()=>creditEl.classList.remove('value-change-positive','value-change-negative'), 2000);
+  }
+
+  const timerEl = document.getElementById("timer"+i);
+  if(timerEl){
+    timerEl.innerHTML = `<span class="timerBank">Bank +${u.bank>0?Math.floor(u.bankTimer/60)+'m':'-'}</span> | <span class="timerCredit">Kredit +${u.credit>0?Math.floor(u.creditTimer/60)+'m':'-'}</span>`;
+  }
+
+  // Tax table
+  const totalWealth = u.bank + u.credit;
+  let taxRate = 0;
+  if(totalWealth <= 500) taxRate = 0.05;
+  else if(totalWealth <= 1500) taxRate = 0.08;
+  else if(totalWealth <= 2500) taxRate = 0.10;
+  else if(totalWealth <= 5000) taxRate = 0.12;
+  else if(totalWealth <= 10000) taxRate = 0.15;
+  else if(totalWealth <= 20000) taxRate = 0.18;
+  else if(totalWealth <= 40000) taxRate = 0.20;
+  else if(totalWealth <= 80000) taxRate = 0.22;
+  else if(totalWealth <= 150000) taxRate = 0.24;
+  else if(totalWealth <= 300000) taxRate = 0.26;
+  else if(totalWealth <= 600000) taxRate = 0.28;
+  else if(totalWealth <= 1000000) taxRate = 0.30;
+  else if(totalWealth <= 5000000) taxRate = 0.32;
+  else taxRate = 0.35;
+  const taxAmount = Math.floor(u.bank * taxRate);
+  const taxAmountEl = document.getElementById("taxAmount"+i);
+  if(taxAmountEl) taxAmountEl.textContent = "$" + taxAmount;
+  const taxTimerEl = document.getElementById("taxTimer"+i);
+  if(taxTimerEl) taxTimerEl.textContent = `⏱ ${Math.floor(u.taxTimer/60)}m`;
+  const taxStatusEl = document.getElementById("taxStatus"+i);
+  if(taxStatusEl) taxStatusEl.textContent = u.taxStatus;
+  const blacklistEl = document.getElementById("blacklist"+i);
+  if(blacklistEl) blacklistEl.textContent = `🚫 ${u.blacklisted ? 'Ha' : 'Yo\'q'}`;
+
+  const taxTr = document.querySelector(`#taxTable tr:nth-child(${i+2})`); // +2 because header is first
+  if(taxTr) taxTr.classList.toggle("blacklisted", gameStarted && u.blacklisted);
+}
+
+function buildTables(){
+  users.forEach((u,i)=>{
+    // Bank & Kredit
+    // Level / achievements checks (may modify bank/credit)
+    checkLevel(u);
+    checkAchievements(u);
+  });
+
+  // Update all rows once
+  users.forEach((_,i)=>updateUserRow(i));
+
+  // Update lottery timer display
+  const minutes = Math.floor(lotteryTimer / 60);
+  const seconds = lotteryTimer % 60;
+  document.getElementById('lotteryTimer').textContent = `Keyingi lotereya: ${minutes}:${seconds.toString().padStart(2,'0')}`;
+  updateUI();
+}
+
+// Initial tables setup
+const userTable=document.getElementById("userTable");
+users.forEach((u,i)=>{
+  const tr=document.createElement("tr");
+  tr.innerHTML=`
+<td>${u.name}</td>
+<td><span class="money" id="credit${i}">$${u.credit}</span><br><input type="text" id="creditInput${i}"><button class="addCredit" data-i="${i}">+</button></td>
+<td><span class="money" id="bank${i}">$${u.bank}</span><br><input type="text" id="bankInput${i}"><button class="addBank" data-i="${i}">+</button></td>
+<td id="timer${i}"><span class="timerBank">Bank +${u.bank>0?Math.floor(u.bankTimer/60)+'m':'-'}</span> | <span class="timerCredit">Kredit +${u.credit>0?Math.floor(u.creditTimer/60)+'m':'-'}</span></td>
+<td><button class="resetBtn" data-i="${i}">🧹 Tozalash</button></td>`;
+  userTable.appendChild(tr);
+});
+
+const taxTable=document.getElementById("taxTable");
+users.forEach((u,i)=>{
+  const bank = u.bank;
+  const totalWealth = u.bank + u.credit;
+  let taxRate = 0;
+  if(totalWealth <= 500) taxRate = 0.05;
+  else if(totalWealth <= 1500) taxRate = 0.08;
+  else if(totalWealth <= 2500) taxRate = 0.10;
+  else if(totalWealth <= 5000) taxRate = 0.12;
+  else if(totalWealth <= 10000) taxRate = 0.15;
+  else if(totalWealth <= 20000) taxRate = 0.18;
+  else if(totalWealth <= 40000) taxRate = 0.20;
+  else if(totalWealth <= 80000) taxRate = 0.22;
+  else if(totalWealth <= 150000) taxRate = 0.24;
+  else if(totalWealth <= 300000) taxRate = 0.26;
+  else if(totalWealth <= 600000) taxRate = 0.28;
+  else if(totalWealth <= 1000000) taxRate = 0.30;
+  else if(totalWealth <= 5000000) taxRate = 0.32;
+  else taxRate = 0.35;
+  const taxAmount = Math.floor(bank * taxRate);
+  const tr=document.createElement("tr");
+  tr.classList.toggle("blacklisted", gameStarted && u.blacklisted);
+  tr.innerHTML=`
+<td>${u.name}</td>
+<td><span class="money" id="taxAmount${i}">$${taxAmount}</span></td>
+<td id="taxTimer${i}">⏱ ${Math.floor(u.taxTimer/60)}m</td>
+<td id="taxStatus${i}">${u.taxStatus}</td>
+<td id="blacklist${i}">🚫 ${u.blacklisted ? 'Ha' : 'Yo\'q'}</td>
+<td><button class="payTax" data-i="${i}">💰 To'lash</button></td>`;
+  taxTable.appendChild(tr);
+});
+
+const senderSelect = document.getElementById("senderSelect");
+const receiverSelect = document.getElementById("receiverSelect");
+const transferAmountInput = document.getElementById("transferAmount");
+const transferBtn = document.getElementById("transferBtn");
+const senderInfo = document.getElementById("senderInfo");
+const shopUserSelect = document.getElementById("shopUserSelect");
+const ownedUpgradesDiv = document.getElementById("ownedUpgrades");
+
+
+const statsUserSelect = document.getElementById("statsUserSelect");
+const statsCanvas = document.getElementById("statsCanvas");
+
+
+
+
+
+const historyList = document.getElementById("historyList");
+
+const statsTooltip = document.createElement('div');
+const ctx = statsCanvas.getContext('2d');
+let graphPoints = [];
+statsTooltip.style.position = 'absolute';
+statsTooltip.style.padding = '6px 8px';
+statsTooltip.style.background = 'rgba(0,0,0,0.75)';
+statsTooltip.style.color = '#fff';
+statsTooltip.style.borderRadius = '6px';
+statsTooltip.style.fontSize = '12px';
+statsTooltip.style.pointerEvents = 'none';
+statsTooltip.style.display = 'none';
+statsTooltip.style.zIndex = '2000';
+document.body.appendChild(statsTooltip);
+
+statsCanvas.addEventListener('mousemove', e => {
+  const rect = statsCanvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  let closest = null;
+  let minDist = Infinity;
+  graphPoints.forEach(pt => {
+    const dx = pt.x - x;
+    const dy = pt.y - y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if(dist < minDist){
+      minDist = dist;
+      closest = pt;
+    }
+  });
+  if(closest && minDist < 10){
+    statsTooltip.style.display = 'block';
+    statsTooltip.style.left = `${rect.left + closest.x + 12}px`;
+    statsTooltip.style.top = `${rect.top + closest.yBank - 18}px`;
+    statsTooltip.textContent = `${closest.time} — Bank: $${closest.bank} | Kredit: $${closest.credit}`;
+  } else {
+    statsTooltip.style.display = 'none';
+  }
+});
+
+statsCanvas.addEventListener('mouseleave', ()=>{
+  statsTooltip.style.display = 'none';
+});
+
+
+const investments = [];
+const transactions = [];
+
+let econTimer = randomBetween(900,1200);
+
+let cachedOptionsHTML = "";
+function populateSelects(){
+  const prevSender = senderSelect.value;
+  const prevReceiver = receiverSelect.value;
+  const prevShop = shopUserSelect.value;
+  const prevStats = statsUserSelect.value;
+  const options = users.map((u,i)=>`<option value="${i}">${u.name}</option>`).join('');
+
+  // avoid re-rendering the selects every second (it closes the dropdown while user is choosing)
+  if(options !== cachedOptionsHTML){
+    senderSelect.innerHTML = options;
+    receiverSelect.innerHTML = options;
+    shopUserSelect.innerHTML = options;
+    statsUserSelect.innerHTML = options;
+    document.getElementById('slotUser').innerHTML = options;
+    document.getElementById('diceUser').innerHTML = options;
+    document.getElementById('lotteryUser').innerHTML = options;
+    cachedOptionsHTML = options;
+  }
+
+  senderSelect.value = users[prevSender] ? prevSender : "0";
+  receiverSelect.value = users[prevReceiver] ? prevReceiver : "0";
+  shopUserSelect.value = users[prevShop] ? prevShop : "0";
+  statsUserSelect.value = users[prevStats] ? prevStats : "0";
+}
+
+function updateSenderInfo(){
+  const i = Number(senderSelect.value);
+  const u = users[i];
+  if(!u) return;
+  const upgrades=[
+    u.upgrades.fastBank?"Fast Bank":"",
+    u.upgrades.creditShield?"Kredit himoyasi":"",
+    u.upgrades.taxDiscount?"Soliq chegirmasi":""
+  ].filter(Boolean);
+  const ach = [];
+  if(u.achievements.first100) ach.push("Birinchi $100");
+  if(u.achievements.thousand) ach.push("$1000 boylik");
+  if(u.achievements.paidTax5) ach.push("5 marta soliq to‘ladi");
+  senderInfo.innerHTML = `
+    <strong>${u.name}</strong> — Level ${u.level}<br>
+    Bank: $${u.bank} | Kredit: $${u.credit}<br>
+    Upgradelar: ${upgrades.length?upgrades.join(', '):"yo‘q"}<br>
+    Achievementlar: ${ach.length?ach.join(', '):"yo‘q"}
+  `;
+}
+
+function updateUI(){
+  populateSelects();
+  updateSenderInfo();
+  updateOwnedUpgrades();
+  renderHistory();
+  drawGraph(Number(statsUserSelect.value));
+}
+
+function updateOwnedUpgrades(){
+  const i = Number(shopUserSelect.value);
+  const u = users[i];
+  if(!u) return;
+  const owned = [];
+  if(u.upgrades.fastBank) owned.push("Fast Bank");
+  if(u.upgrades.creditShield) owned.push("Kredit himoyasi");
+  if(u.upgrades.taxDiscount) owned.push("Soliq chegirmasi");
+  ownedUpgradesDiv.innerHTML = `<strong>Olingan upgradelar:</strong> ${owned.length?owned.join(', '):"yo‘q"}`;
+}
+
+const LEVEL_SETTINGS=[
+  {level:1, threshold:0},
+  {level:2, threshold:100, effect:(u)=>{u.levelEffects.bankInterestPct+=1;}},
+  {level:3, threshold:300, effect:(u)=>{u.levelEffects.taxDiscountPct+=2;}},
+  {level:4, threshold:700, effect:(u)=>{u.levelEffects.randomBonus+=5;}},
+  {level:5, threshold:1200, effect:(u)=>{u.levelEffects.bankTimerSpeed*=0.9;}},
+  {level:6, threshold:1800, effect:(u)=>{u.levelEffects.creditInterestPct-=2;}},
+  {level:7, threshold:2600, effect:(u)=>{u.levelEffects.randomBonus+=10;}},
+  {level:8, threshold:3600, effect:(u)=>{u.levelEffects.taxDiscountPct+=3;}},
+  {level:9, threshold:4800, effect:(u)=>{u.levelEffects.bankInterestPct+=2;}},
+  {level:10, threshold:6200, effect:(u)=>{u.levelEffects.specialBonus+=25;}},
+  {level:11, threshold:7800, effect:(u)=>{u.levelEffects.bankTimerSpeed*=0.85;}},
+  {level:12, threshold:9600, effect:(u)=>{u.levelEffects.creditInterestPct-=3;}},
+  {level:13, threshold:11600, effect:(u)=>{u.levelEffects.randomBonus+=15;}},
+  {level:14, threshold:13800, effect:(u)=>{u.levelEffects.taxDiscountPct+=5;}},
+  {level:15, threshold:16200, effect:(u)=>{u.levelEffects.bankInterestPct+=3;}},
+  {level:16, threshold:18800, effect:(u)=>{u.levelEffects.bankTimerSpeed*=0.8;}},
+  {level:17, threshold:21600, effect:(u)=>{u.levelEffects.randomBonus+=20;}},
+  {level:18, threshold:24600, effect:(u)=>{u.levelEffects.creditInterestPct-=4;}},
+  {level:19, threshold:27800, effect:(u)=>{u.levelEffects.taxDiscountPct+=7;}},
+  {level:20, threshold:31200, effect:(u)=>{u.levelEffects.specialBonus+=50;}},
+  {level:21, threshold:34800, effect:(u)=>{u.levelEffects.bankInterestPct+=4;}},
+  {level:22, threshold:38600, effect:(u)=>{u.levelEffects.randomBonus+=25;}},
+  {level:23, threshold:42600, effect:(u)=>{u.levelEffects.creditInterestPct-=5;}},
+  {level:24, threshold:46800, effect:(u)=>{u.levelEffects.taxDiscountPct+=10;}},
+  {level:25, threshold:51200, effect:(u)=>{/* max */}}
+];
+
+function applyLevelEffects(u, newLevel){
+  const setting = LEVEL_SETTINGS.find(s=>s.level===newLevel);
+  if(setting && typeof setting.effect==="function" && !u.appliedLevels.includes(newLevel)){
+    setting.effect(u);
+    u.appliedLevels.push(newLevel);
+  }
+  // apply special bonus immediately if present
+  if(u.levelEffects.specialBonus>0){
+    u.bank += u.levelEffects.specialBonus;
+    addHistoryPoint(users.indexOf(u));
+    notify(`${u.name} level bonus: $${u.levelEffects.specialBonus} qo‘shildi!`);
+    u.levelEffects.specialBonus=0;
+  }
+}
+
+function checkLevel(u){
+  const total = u.bank + u.credit;
+  const nextLevel = [...LEVEL_SETTINGS].reverse().find(s=>total>=s.threshold).level;
+  if(nextLevel>u.level){
+    u.level = nextLevel;
+    applyLevelEffects(u, nextLevel);
+    notify(`${u.name} Level ${nextLevel} ga ko‘tarildi!`);
+  }
+}
+
+function checkAchievements(u){
+  if(!u.achievements.first100 && u.bank>=100){
+    u.achievements.first100=true;
+    u.badges.push('🎖️ First $100');
+    notify(`${u.name} yangi badge: 🎖️ First $100!`);
+  }
+  if(!u.achievements.thousand && (u.bank+u.credit)>=1000){
+    u.achievements.thousand=true;
+    u.badges.push('💎 $1000 Boylik');
+    notify(`${u.name} yangi badge: 💎 $1000 Boylik!`);
+  }
+  if(!u.achievements.paidTax5 && u.taxPaidCount>=5){
+    u.achievements.paidTax5=true;
+    u.badges.push('🏦 Bank Master');
+    notify(`${u.name} yangi badge: 🏦 Bank Master!`);
+  }
+  if(u.casinoWins >= 10 && !u.badges.includes('🎰 Casino Master')){
+    u.badges.push('🎰 Casino Master');
+    notify(`${u.name} yangi badge: 🎰 Casino Master!`);
+  }
+  if(u.investCount >= 5 && !u.badges.includes('📈 Investor Pro')){
+    u.badges.push('📈 Investor Pro');
+    notify(`${u.name} yangi badge: 📈 Investor Pro!`);
+  }
+}
+
+function parseAmount(input, currentBalance) {
+  const str = input.trim();
+  if (str.endsWith('%')) {
+    const pct = parseFloat(str.slice(0, -1));
+    if (isNaN(pct)) return 0;
+    return Math.floor(currentBalance * pct / 100);
+  } else {
+    return parseFloat(str) || 0;
+  }
+}
+
+// Event delegation
+document.addEventListener("click",e=>{
+  if(e.target.classList.contains("addCredit")){
+    const i=Number(e.target.dataset.i);
+    const input = document.getElementById("creditInput"+i).value;
+    const val = parseAmount(input, users[i].credit);
+    if(val!==0){
+      users[i].credit += val;
+      if(val > 0) users[i].bank += val;
+    }
+    document.getElementById("creditInput"+i).value = '';
+    if(val > 0) addHistoryPoint(i);
+    buildTables();
+  }
+  if(e.target.classList.contains("addBank")){
+    const i=Number(e.target.dataset.i);
+    const input = document.getElementById("bankInput"+i).value;
+    const val = parseAmount(input, users[i].bank);
+    if(val!==0) users[i].bank += val;
+    document.getElementById("bankInput"+i).value = '';
+    addHistoryPoint(i);
+    buildTables();
+  }
+  if(e.target.classList.contains("payTax")){
+    const i=Number(e.target.dataset.i);
+    const u = users[i];
+    const totalWealth = u.bank + u.credit;
+    let taxRate = 0;
+    if(totalWealth <= 500) taxRate = 0.05;
+    else if(totalWealth <= 1500) taxRate = 0.08;
+    else if(totalWealth <= 2500) taxRate = 0.10;
+    else if(totalWealth <= 5000) taxRate = 0.12;
+    else if(totalWealth <= 10000) taxRate = 0.15;
+    else if(totalWealth <= 20000) taxRate = 0.18;
+    else if(totalWealth <= 40000) taxRate = 0.20;
+    else if(totalWealth <= 80000) taxRate = 0.22;
+    else if(totalWealth <= 150000) taxRate = 0.24;
+    else if(totalWealth <= 300000) taxRate = 0.26;
+    else if(totalWealth <= 600000) taxRate = 0.28;
+    else if(totalWealth <= 1000000) taxRate = 0.30;
+    else if(totalWealth <= 5000000) taxRate = 0.32;
+    else taxRate = 0.35;
+    let taxAmount = Math.floor(u.bank * taxRate);
+    if(u.taxStatus === '❌ To\'lanmadi'){
+      if(u.bank >= taxAmount){
+        u.bank -= taxAmount;
+        u.taxStatus = '✅ To\'landi';
+        u.taxPaidCount++;
+        addTransaction(`${u.name} soliq to'ladi: -$${taxAmount}`);
+        notify(`${u.name} soliq to'ladi! ✅`);
+        addHistoryPoint(i);
+      } else {
+        notify("Yetarli mablag' yo'q soliq uchun.");
+      }
+    } else if(u.taxStatus === '✅ To\'landi'){
+      u.taxStatus = '⏳ Kuting';
+      notify("⏳ Kuting, soliq allaqachon to'langan.");
+    }
+  }
+  if(e.target.classList.contains("addRating")){
+    const userIdx = Number(document.getElementById("userSelect").value);
+    const rating = Number(document.getElementById("ratingInput").value);
+    if(rating >=1 && rating <=10){
+      users[userIdx].bank += rating;
+      buildTables();
+    }
+  }
+  if(e.target.id === "transferBtn"){
+    const senderIdx = Number(senderSelect.value);
+    const receiverIdx = Number(receiverSelect.value);
+    const amount = Number(transferAmountInput.value);
+    if(senderIdx===receiverIdx){
+      notify("Jo‘natuvchi va qabul qiluvchi bir xil bo‘lmasligi kerak.");
+    } else if(amount>0 && users[senderIdx].bank>=amount){
+      users[senderIdx].bank -= amount;
+      addHistoryPoint(senderIdx);
+      users[receiverIdx].bank += amount;
+      addHistoryPoint(receiverIdx);
+      notify(`$${amount} ${users[senderIdx].name} dan ${users[receiverIdx].name} ga o‘tkazildi.`);
+      buildTables();
+    } else {
+      notify("Yetarli mablag‘ yo‘q yoki summa noto‘g‘ri.");
+    }
+  }
+  if(e.target.id === "buyFastBank"){
+    const i = Number(shopUserSelect.value);
+    const cost=15;
+    if(users[i].bank>=cost){
+      users[i].bank-=cost;
+      addHistoryPoint(i);
+      users[i].upgrades.fastBank=true;
+      users[i].fastBankTimer = 300; // 5 minutes
+      notify("Fast Bank sotib olindi! Bank foizi 5 daqiqa davomida ikki baravar tezroq o‘sadi.");
+      buildTables();
+    }
+  }
+  if(e.target.id === "buyCreditShield"){
+    const i = Number(shopUserSelect.value);
+    const cost=20;
+    if(users[i].bank>=cost && !users[i].upgrades.creditShield){
+      users[i].bank-=cost;
+      addHistoryPoint(i);
+      users[i].upgrades.creditShield=true;
+      notify("Kredit himoyasi sotib olindi! Kredit foizi kamayadi.");
+      buildTables();
+    }
+  }
+  if(e.target.id === "investBtn"){
+    const i = Number(investUserSelect.value);
+    const amount = Number(investPlanSelect.value);
+    startInvestment(i, amount);
+    addHistoryPoint(i);
+    buildTables();
+  }
+  if(e.target.id === "casinoBtn"){
+    const i = Number(casinoUserSelect.value);
+    const amount = Number(casinoAmountInput.value);
+    if(amount>0){
+      playCasino(i, amount);
+      addHistoryPoint(i);
+      buildTables();
+    }
+  }
+  if(e.target.id === "playSlot"){
+    playSlot();
+  }
+  if(e.target.id === "playDice"){
+    playDice();
+  }
+  if(e.target.id === "buyLottery"){
+    buyLottery();
+  }
+  if(e.target.classList.contains("resetBtn")){
+    const i = Number(e.target.dataset.i);
+    users[i].credit = 0;
+    users[i].bank = 0;
+    users[i].history = [];
+    users[i].creditHistory = [];
+    addHistoryPoint(i);
+    buildTables();
+    notify(`${users[i].name} ma'lumotlari tozalandi.`);
+  }
+
+});
+
+document.addEventListener("change",e=>{
+  if(e.target.classList.contains("slotInput")){
+    const i=Number(e.target.dataset.i);
+    let val=parseInt(e.target.value);
+    users[i].slots=isNaN(val)||val<0?0:val;
+    buildTables();
+  }
+  if(e.target.id==="senderSelect"){
+    updateSenderInfo();
+  }
+  if(e.target.id==="shopUserSelect"){
+    updateOwnedUpgrades();
+  }
+  if(e.target.id==="statsUserSelect"){
+    updateBusinessUI();
+    drawGraph(Number(e.target.value));
+  }
+  if(e.target.id==="lotteryUser"){
+    updateLotteryUI();
+  }
+});
+
+document.addEventListener("input",e=>{
+  if(e.target.classList.contains("slotInput")){
+    const i=Number(e.target.dataset.i);
+    let val=parseInt(e.target.value);
+    users[i].slots=isNaN(val)||val<0?0:val;
+    buildTables();
+  }
+});
+
+// Timer
+function updateTimers(){
+  users.forEach((u,i)=>{
+    // existing bank/credit income timers
+    if(u.bank>0){
+      u.bankTimer--;
+      if(u.bankTimer<=0){
+        u.bank+=1;
+        u.bankTimer=300;
+        addHistoryPoint(i);
+      }
+    }
+    if(u.credit>0){
+      u.creditTimer--;
+      if(u.creditTimer<=0){
+        u.credit+=1;
+        u.creditTimer=600;
+      }
+    }
+
+    // interest (every 10 minutes)
+    let bankInterval = INTEREST_INTERVAL * (u.levelEffects.bankTimerSpeed||1);
+    if(u.fastBankTimer > 0) {
+      bankInterval *= 0.5;
+      u.fastBankTimer--;
+      if(u.fastBankTimer === 0) {
+        u.upgrades.fastBank = false;
+        notify(`${u.name} uchun Fast Bank muddati tugadi.`);
+      }
+    }
+    u.bankInterestTimer--;
+    if(u.bankInterestTimer<=0){
+      if(u.bank>0){
+        const rate = 0.02 * inflationRate + (u.levelEffects.bankInterestPct||0)/100;
+        u.bank += Math.floor(u.bank*rate);
+        addHistoryPoint(i);
+      }
+      u.bankInterestTimer = Math.max(30, Math.floor(bankInterval));
+    }
+
+    let creditInterval = INTEREST_INTERVAL;
+    u.creditInterestTimer--;
+    if(u.creditInterestTimer<=0){
+      if(u.credit>0){
+        let rate = 0.03 * inflationRate + (u.levelEffects.creditInterestPct||0)/100;
+        if(u.upgrades.creditShield) rate -= 0.015;
+        rate = Math.max(0, rate);
+        u.credit += Math.ceil(u.credit*rate);
+      }
+      u.creditInterestTimer = creditInterval;
+    }
+
+    // Tax timer
+    if(gameActive && u.taxStatus === '❌ To\'lanmadi'){
+      u.taxTimer--;
+      if(u.taxTimer <= 0){
+        // Apply fine
+        u.bank -= 20;
+        u.taxStatus = '❌ To\'lanmadi';
+        addTransaction(`${u.name} soliq vaqtida to'lamadi, jarima: -$20`);
+        notify(`${u.name} soliq vaqtida to'lamadi! Jarima: -$20`);
+        addHistoryPoint(i);
+        // Reset timer for next cycle
+        u.taxTimer = 1800;
+      }
+    }
+  });
+
+  // investments timer
+  investments.forEach(inv=>{
+    inv.remaining--;
+  });
+  const completed = investments.filter(inv=>inv.remaining<=0);
+  if(completed.length){
+    completed.forEach(inv=>{
+      const u = users[inv.userIdx];
+      if(u){
+        u.bank += inv.returnAmount;
+        u.totalInvested += inv.amount; // track invested
+        addHistoryPoint(inv.userIdx);
+        addTransaction(`${u.name} investitsiya tugadi: +$${inv.returnAmount}`);
+        notify(`${u.name} investitsiya natijasi: $${inv.returnAmount}`);
+      }
+    });
+    // remove finished
+    for(let i=investments.length-1;i>=0;i--){
+      if(investments[i].remaining<=0) investments.splice(i,1);
+    }
+  }
+
+  // random user events
+  eventTimer--;
+  if(eventTimer<=0){
+    triggerRandomEvent();
+    eventTimer = randomBetween(EVENT_INTERVAL_MIN, EVENT_INTERVAL_MAX);
+  }
+
+  // global economic events
+  econTimer--;
+  if(econTimer<=0){
+    triggerGlobalEvent();
+    econTimer = randomBetween(900,1200);
+  }
+
+  // lottery timer
+  lotteryTimer--;
+  if(lotteryTimer<=0){
+    drawLottery();
+  }
+  updateLotteryUI();
+
+  // Update only changed rows instead of rebuilding whole table
+  users.forEach((_, i)=> updateUserRow(i));
+
+  // Refresh stats graph each second if stats panel is being viewed
+  const statsSelect = document.getElementById('statsUserSelect');
+  if(statsSelect){
+    drawGraph(Number(statsSelect.value));
+  }
+}
+
+function triggerRandomEvent(){
+  const user = users[Math.floor(Math.random()*users.length)];
+  const bonus = user.levelEffects.randomBonus || 0;
+  const events=[
+    {text:`Bonus! ${user.name} +$${20+bonus} oldi`, action:()=>{user.bank+=20+bonus; addHistoryPoint(users.indexOf(user));}},
+    {text:`Jarima! ${user.name} -$15 yo‘qotdi`, action:()=>{user.bank=Math.max(0,user.bank-15); addHistoryPoint(users.indexOf(user));}},
+    {text:`Bank xatosi! ${user.name} bankdagi pul -10% kamaydi`, action:()=>{user.bank=Math.floor(user.bank*0.9); addHistoryPoint(users.indexOf(user));}}
+  ];
+  const ev=events[Math.floor(Math.random()*events.length)];
+  ev.action();
+  notify(ev.text);
+}
+
+function playSlot(){
+  const i = Number(document.getElementById('slotUser').value);
+  const bet = Number(document.getElementById('slotBet').value);
+  const u = users[i];
+  if(!u || u.bank < bet) {
+    document.getElementById('slotResult').textContent = 'Yetarli mablag\' yo\'q!';
+    return;
+  }
+  u.bank -= bet;
+  addHistoryPoint(i);
+  const win = Math.random() < 0.25;
+  let payout = 0;
+  if(win){
+    payout = bet * 2;
+    u.bank += payout;
+    u.casinoWins++;
+    addTransaction(`${u.name} slotda yutdi: +$${payout}`);
+    notify(`${u.name} slotda yutdi! +$${payout}`);
+  } else {
+    addTransaction(`${u.name} slotda yutqazdi: -$${bet}`);
+    notify(`${u.name} slotda yutqazdi! -$${bet}`);
+  }
+  document.getElementById('slotResult').textContent = win ? `Yutdingiz! +$${payout}` : `Yutqazdingiz! -$${bet}`;
+  buildTables();
+}
+
+function playDice(){
+  const i = Number(document.getElementById('diceUser').value);
+  const bet = Number(document.getElementById('diceBet').value);
+  const guess = Number(document.getElementById('diceGuess').value);
+  const u = users[i];
+  if(!u || u.bank < bet || guess <1 || guess >6) {
+    document.getElementById('diceResult').textContent = 'Xato ma\'lumot!';
+    return;
+  }
+  u.bank -= bet;
+  addHistoryPoint(i);
+  const roll = Math.floor(Math.random()*6)+1;
+  let payout = 0;
+  if(roll === guess){
+    payout = bet * 2;
+    u.bank += payout;
+    u.casinoWins++;
+    addTransaction(`${u.name} dice yutdi: +$${payout}`);
+    notify(`${u.name} dice yutdi! +$${payout}`);
+  } else {
+    addTransaction(`${u.name} dice yutqazdi: -$${bet}`);
+    notify(`${u.name} dice yutqazdi! -$${bet}`);
+  }
+  document.getElementById('diceResult').textContent = `Dice: ${roll}, Siz: ${guess} - ${roll === guess ? 'Yutdingiz!' : 'Yutqazdingiz!'}`;
+  buildTables();
+}
+
+function buyLottery(){
+  const i = Number(document.getElementById('lotteryUser').value);
+  const numTickets = Number(document.getElementById('lotteryTickets').value);
+  if(isNaN(numTickets) || numTickets <= 0) {
+    document.getElementById('lotteryResult').textContent = 'Noto\'g\'ri chipta soni!';
+    return;
+  }
+  const ticketPrice = 100;
+  const totalCost = numTickets * ticketPrice;
+  const u = users[i];
+  if(!u || u.bank < totalCost) {
+    document.getElementById('lotteryResult').textContent = 'Yetarli mablag\' yo\'q!';
+    return;
+  }
+  u.bank -= totalCost;
+  lotteryPot += totalCost;
+  totalTickets += numTickets;
+  u.lotteryTickets += numTickets;
+  addHistoryPoint(i);
+  addTransaction(`${u.name} ${numTickets} ta lotereya chiptasi sotib oldi: -$${totalCost}`);
+  notify(`${u.name} ${numTickets} ta chipta sotib oldi!`);
+  document.getElementById('lotteryResult').textContent = `${numTickets} ta chipta sotib olindi!`;
+  updateLotteryUI();
+  buildTables();
+}
+
+function updateLotteryUI(){
+  document.getElementById('lotteryPot').textContent = lotteryPot;
+  document.getElementById('ticketsSold').textContent = totalTickets;
+  const i = Number(document.getElementById('lotteryUser').value) || 0;
+  if (users[i] && isNaN(users[i].lotteryTickets)) users[i].lotteryTickets = 0;
+  document.getElementById('yourTickets').textContent = users[i] ? users[i].lotteryTickets : 0;
+  const minutes = Math.floor(lotteryTimer / 60);
+  const seconds = lotteryTimer % 60;
+  document.getElementById('lotteryTimer').textContent = `Keyingi lotereya: ${minutes}:${seconds.toString().padStart(2,'0')}`;
+  document.getElementById('lastWinner').textContent = lastWinner ? lastWinner : 'None';
+}
+
+function drawLottery(){
+  if(totalTickets === 0) {
+    lotteryTimer = 300; // reset to 5 min
+    updateLotteryUI();
+    return;
+  }
+  // Create array of ticket owners
+  const ticketOwners = [];
+  users.forEach((u, idx) => {
+    for(let t=0; t<u.lotteryTickets; t++) ticketOwners.push(idx);
+  });
+  if(ticketOwners.length === 0) return;
+  const winnerIdx = ticketOwners[Math.floor(Math.random() * ticketOwners.length)];
+  const winner = users[winnerIdx];
+  const prize = Math.floor(lotteryPot * 0.8);
+  const tax = lotteryPot - prize;
+  winner.bank += prize;
+  winner.lotteryWins++;
+  addHistoryPoint(winnerIdx);
+  addTransaction(`${winner.name} lotereya yutdi: +$${prize}`);
+  notify(`${winner.name} lotereya yutdi! +$${prize} 🏆`);
+  lastWinner = winner.name;
+  // Reset
+  lotteryPot = 0;
+  totalTickets = 0;
+  users.forEach(u => u.lotteryTickets = 0);
+  lotteryTimer = 300; // reset to 5 min
+  updateLotteryUI();
+  buildTables();
+}
+
+// simulate passage of time without the interval running
+// bank/credit always progress; tax only if gameActive
+function advanceTime(seconds){
+  for(let i=0;i<seconds;i++){
+    // bank/credit part of updateTimers
+    users.forEach((u,idx)=>{
+      if(u.bank>0){u.bankTimer--; if(u.bankTimer<=0){u.bank+=1; u.bankTimer=300; addHistoryPoint(idx);}}
+      if(u.credit>0){u.creditTimer--; if(u.creditTimer<=0){u.credit+=1; u.creditTimer=600;}}
+
+      // interest
+      const bankInterval = u.upgrades.fastBank?INTEREST_INTERVAL/2:INTEREST_INTERVAL;
+      u.bankInterestTimer--;
+      if(u.bankInterestTimer<=0){
+        if(u.bank>0){u.bank += Math.floor(u.bank*0.02); addHistoryPoint(idx);}
+        u.bankInterestTimer = bankInterval;
+      }
+      u.creditInterestTimer--;
+      if(u.creditInterestTimer<=0){
+        if(u.credit>0){
+          const rate = u.upgrades.creditShield?0.015:0.03;
+          u.credit += Math.ceil(u.credit*rate);
+        }
+        u.creditInterestTimer = INTEREST_INTERVAL;
+      }
+
+      // Tax timer
+      if(gameActive && u.taxStatus === '❌ To\'lanmadi'){
+        u.taxTimer--;
+        if(u.taxTimer <= 0){
+          u.bank -= 20;
+          u.taxStatus = '❌ To\'lanmadi';
+          addTransaction(`${u.name} soliq vaqtida to'lamadi, jarima: -$20`);
+          notify(`${u.name} soliq vaqtida to'lamadi! Jarima: -$20`);
+          addHistoryPoint(idx);
+          u.taxTimer = 1800;
+        }
+      }
+    });
+  }
+  buildTables();
+}
+
+// Start
+document.getElementById("startBtn").addEventListener("click",()=>{
+  if(gameStarted) return;
+  gameStarted=true;
+  gameActive=true;
+
+  document.getElementById("stopBtn").disabled=false;
+  document.getElementById("stopBtn").style.backgroundColor = "#f87171";
+  timerInterval = setInterval(updateTimers, 1000);
+  notify("O‘yin boshlandi! ⏱️");
+  buildTables();
+});
+
+// Stop
+document.getElementById("stopBtn").addEventListener("click",()=>{
+  if(!gameStarted) return;
+  gameStarted=false;
+  gameActive=false;
+  clearInterval(timerInterval);
+  clearInterval(graphInterval);
+  document.getElementById("stopBtn").disabled=true;
+  document.getElementById("stopBtn").style.backgroundColor = "#38bdf8"; // reset to original blue
+  notify("O‘yin tugadi! ⏹️");
+  buildTables();
+  saveData();
+});
+
+function startGraphRefresh(){
+  if(graphInterval) return;
+  graphInterval = setInterval(()=>{
+    const statsSelect = document.getElementById('statsUserSelect');
+    if(statsSelect){
+      drawGraph(Number(statsSelect.value));
+    }
+  }, 500);
+}
+
+function stopGraphRefresh(){
+  if(graphInterval){
+    clearInterval(graphInterval);
+    graphInterval = null;
+  }
+}
+
+// Save button (manual save)
+document.getElementById("saveBtn").addEventListener("click",()=>{
+  saveData();
+});
+
+// Initial
+loadData();
+buildTables();
+// reflect persisted active state
+gameStarted = gameActive;
+if(gameActive){
+  document.getElementById("stopBtn").disabled=false;
+}
+// start continuous interval for bank/credit (tax updates gated by gameStarted)
+timerInterval = setInterval(updateTimers,1000);
+startGraphRefresh();
+populateSelects();
+
+// Header navigation buttons (scroll to section)
+const headerEl = document.querySelector('.header');
+function getHeaderHeight(){
+  return headerEl ? headerEl.offsetHeight + 16 : 120; // add small buffer
+}
+
+document.querySelectorAll('.navBtn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const targetId = btn.dataset.target;
+    const el = document.getElementById(targetId);
+    if(el){
+      const top = el.getBoundingClientRect().top + window.scrollY - getHeaderHeight();
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    }
+  });
+});
+
+// Leaderboard variables
+const leaderboardTooltip = document.createElement('div');
+leaderboardTooltip.className = 'leaderboard-tooltip';
+document.body.appendChild(leaderboardTooltip);
+
+// Build leaderboard
+function buildLeaderboard(){
+  const table = document.getElementById('leaderboardTable');
+  // Clear existing rows except header
+  while(table.rows.length > 1) table.deleteRow(1);
+
+  // Sort users by wealth descending
+  const sortedUsers = [...users].sort((a,b)=>{
+    const aWealth = a.bank + a.credit;
+    const bWealth = b.bank + b.credit;
+    return bWealth - aWealth;
+  });
+
+  sortedUsers.forEach((u, idx)=>{
+    const rank = idx + 1;
+    const totalWealth = u.bank + u.credit;
+    let wealthClass = '';
+    let category = '';
+    if(totalWealth <= 500) { wealthClass = 'wealth-poor'; category = 'Kambag\'al'; }
+    else if(totalWealth <= 1500) { wealthClass = 'wealth-middle'; category = 'O\'rta'; }
+    else if(totalWealth <= 2500) { wealthClass = 'wealth-rich'; category = 'Boy'; }
+    else if(totalWealth <= 5000) { wealthClass = 'wealth-super'; category = 'Super Boy'; }
+    else if(totalWealth <= 10000) { category = 'Milliarder 💎'; }
+    else if(totalWealth <= 20000) { category = 'Magnat 🏦'; }
+    else if(totalWealth <= 40000) { category = 'Oligarx 👑'; }
+    else if(totalWealth <= 80000) { category = 'Imperator 💠'; }
+    else if(totalWealth <= 150000) { category = 'Bank Lord 🏛️'; }
+    else if(totalWealth <= 300000) { category = 'Finans Titan 📈'; }
+    else if(totalWealth <= 600000) { category = 'Global Magnat 🌍'; }
+    else if(totalWealth <= 1000000) { category = 'Kapital Qirol 👑'; }
+    else if(totalWealth <= 5000000) { category = 'Pul Afsonasi 🪙'; }
+    else { category = 'Bank Xudosi ⚡'; }
+
+    let medal = '';
+    if(rank === 1) medal = '🏆';
+    else if(rank === 2) medal = '🥈';
+    else if(rank === 3) medal = '🥉';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${medal} ${rank}</td>
+      <td>${u.name}</td>
+      <td>$${totalWealth}</td>
+      <td>${u.casinoWins}</td>
+      <td>${category}</td>
+    `;
+    table.appendChild(tr);
+
+    // Hover tooltip
+    tr.addEventListener('mouseenter', e=>{
+      let taxRate = 0;
+      if(totalWealth <= 500) taxRate = 5;
+      else if(totalWealth <= 1500) taxRate = 8;
+      else if(totalWealth <= 2500) taxRate = 10;
+      else if(totalWealth <= 5000) taxRate = 12;
+      else if(totalWealth <= 10000) taxRate = 15;
+      else if(totalWealth <= 20000) taxRate = 18;
+      else if(totalWealth <= 40000) taxRate = 20;
+      else if(totalWealth <= 80000) taxRate = 22;
+      else if(totalWealth <= 150000) taxRate = 24;
+      else if(totalWealth <= 300000) taxRate = 26;
+      else if(totalWealth <= 600000) taxRate = 28;
+      else if(totalWealth <= 1000000) taxRate = 30;
+      else if(totalWealth <= 5000000) taxRate = 32;
+      else taxRate = 35;
+      const achieved = Object.values(u.achievements).filter(Boolean);
+      leaderboardTooltip.innerHTML = `
+        <strong>${u.name}</strong><br>
+        Soliq %: ${taxRate}%<br>
+        Upgradelar: ${u.upgrades.fastBank ? 'Fast Bank' : ''} ${u.upgrades.creditShield ? 'Credit Shield' : ''}<br>
+        Achievements: ${achieved.length}
+      `;
+      leaderboardTooltip.style.display = 'block';
+      leaderboardTooltip.style.left = `${e.pageX + 10}px`;
+      leaderboardTooltip.style.top = `${e.pageY + 10}px`;
+    });
+    tr.addEventListener('mousemove', e=>{
+      leaderboardTooltip.style.left = `${e.pageX + 10}px`;
+      leaderboardTooltip.style.top = `${e.pageY + 10}px`;
+    });
+    tr.addEventListener('mouseleave', ()=>{
+      leaderboardTooltip.style.display = 'none';
+    });
+  });
+}
+
+// Auto-update leaderboard every 30 seconds
+setInterval(buildLeaderboard, 30000);
+
+// Auto-update stats graph every 3 seconds
+setInterval(() => {
+  const sel = document.getElementById('statsUserSelect');
+  if(sel && sel.value !== '') drawGraph(Number(sel.value));
+}, 3000);
+
+// Initial build
+buildLeaderboard();
+updateLotteryUI();
+</script>
+
+</body>
+</html>
